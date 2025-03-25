@@ -1,0 +1,6 @@
+name: quantum
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - qiskit=0.45.0
