@@ -6,7 +6,6 @@ import io.github.swampus.ports.QuantumCollectionRepository;
 
 public class DeleteEntryUseCase {
     private final QuantumCollectionRepository repository;
-
     public DeleteEntryUseCase(QuantumCollectionRepository repository) {
         this.repository = repository;
     }

@@ -1,7 +1,8 @@
-package io.github.swampus.search;
+package io.github.swampus.search.python;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
+import io.github.swampus.config.QuantumProperties;
 import io.github.swampus.ports.QuantumSearcher;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -10,20 +11,19 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
-public abstract class AbstractGroverSearcher implements QuantumSearcher {
+public abstract class AbstractPythonSearcher {
 
-    private final QuantumConfig config;
-    private final ObjectMapper objectMapper;
+    protected final QuantumConfig quantumConfig;
+    protected final QuantumProperties properties;
+    protected final ObjectMapper objectMapper;
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Override
-    public String search(String key, Set<String> keys) {
+    public String search(String key, List<String> keys) {
         try {
             String keysJson = objectMapper.writeValueAsString(keys);
-            String[] command = buildCommand(key, keysJson);
+            String[] command = buildCommand(quantumConfig, properties, key, keysJson);
             Process process = new ProcessBuilder(command).start();
 
             try (BufferedReader reader = new BufferedReader(
@@ -31,7 +31,7 @@ public abstract class AbstractGroverSearcher implements QuantumSearcher {
                 String line;
                 String lastLine = null;
                 while ((line = reader.readLine()) != null) {
-                    logger.info(getClass().getSimpleName() + " Output: " + line);
+                    logger.info(getClass().getSimpleName() + " Output: {}", line);
                     lastLine = line;
                 }
                 return lastLine;
@@ -43,11 +43,9 @@ public abstract class AbstractGroverSearcher implements QuantumSearcher {
     }
 
     protected abstract String[] buildCommand(
+            QuantumConfig quantumConfig,
+            QuantumProperties properties,
             String key,
             String keysJson);
-
-    public QuantumConfig getConfig() {
-        return config;
-    }
 }
 

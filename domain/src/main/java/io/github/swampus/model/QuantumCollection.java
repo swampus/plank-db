@@ -1,6 +1,8 @@
 package io.github.swampus.model;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class QuantumCollection {
@@ -10,6 +12,10 @@ public class QuantumCollection {
 
     public QuantumCollection(String name) {
         this.name = name;
+    }
+
+    public Set<String> keys() {
+        return Set.copyOf(storage.keySet());
     }
 
     public String getName() {
@@ -34,5 +40,8 @@ public class QuantumCollection {
 
     public boolean containsKey(String key) {
         return storage.containsKey(key);
+    }
+    public Map<String, String> entries() {
+        return new HashMap<>(storage);
     }
 }

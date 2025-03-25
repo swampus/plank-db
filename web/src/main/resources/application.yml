@@ -1,0 +1,11 @@
+server:
+  port: 8085
+
+quantum:
+  python-executable: D:/miniconda3_python/envs/quantum/python.exe
+  local-script-path: python/grover.py
+  local-range-script: python/grover_range.py
+  ibm-range-script: python/grover_range_ibm.py
+  ibm-script-path: python/grover_ibm.py
+  ibm-token: "PASTE_YOUR_IBM_TOKEN_HERE"
+  execution-mode: LOCAL # или IBM или IBM_REAL_PC
