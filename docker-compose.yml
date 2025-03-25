@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  plank-db:
+    build: .
+    ports:
+      - "8085:8085"
+    environment:
+      - QUANTUM_MODE=LOCAL
+      - QUANTUM_PYTHON_EXEC=python3
+      - QUANTUM_LOCAL_SCRIPT_PATH=python/grover.py
+      - QUANTUM_LOCAL_RANGE_SCRIPT_PATH=python/grover_range.py
+      - QUANTUM_IBM_SCRIPT_PATH=python/grover_ibm.py
+      - QUANTUM_IBM_RANGE_SCRIPT_PATH=python/grover_range_ibm.py
+      - QUANTUM_IBM_TOKEN=your_ibm_token_here
+    volumes:
+      - ./python:/app/python

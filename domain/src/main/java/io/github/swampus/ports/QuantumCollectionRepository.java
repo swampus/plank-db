@@ -13,5 +13,4 @@ public interface QuantumCollectionRepository {
 
     void delete(String name);
 
-    QuantumCollection get(String name);
 }

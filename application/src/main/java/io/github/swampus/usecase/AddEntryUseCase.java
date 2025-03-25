@@ -6,7 +6,6 @@ import io.github.swampus.ports.QuantumCollectionRepository;
 
 public class AddEntryUseCase {
     private final QuantumCollectionRepository repository;
-
     public AddEntryUseCase(QuantumCollectionRepository repository) {
         this.repository = repository;
     }
