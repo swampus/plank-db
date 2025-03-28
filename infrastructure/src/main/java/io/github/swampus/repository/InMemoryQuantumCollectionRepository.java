@@ -1,6 +1,5 @@
 package io.github.swampus.repository;
 
-import io.github.swampus.exception.CollectionNotFoundException;
 import io.github.swampus.model.QuantumCollection;
 import io.github.swampus.ports.QuantumCollectionRepository;
 import org.springframework.stereotype.Repository;
