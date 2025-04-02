@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public abstract class AbstractGroverSearcher implements QuantumSearcher {
         try {
             String keysJson = objectMapper.writeValueAsString(keys);
             String[] command = buildCommand(key, keysJson);
+            System.out.println("\n \n Execute command: " + Arrays.toString(command));
             Process process = new ProcessBuilder(command).start();
 
             try (BufferedReader reader = new BufferedReader(
