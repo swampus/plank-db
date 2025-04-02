@@ -2,10 +2,19 @@ server:
   port: 8085
 
 quantum:
-  python-executable: D:/miniconda3_python/envs/quantum/python.exe
-  local-script-path: python/grover.py
-  local-range-script: python/grover_range.py
-  ibm-range-script: python/grover_range_ibm.py
-  ibm-script-path: python/grover_ibm.py
-  ibm-token: "PASTE_YOUR_IBM_TOKEN_HERE"
-  execution-mode: LOCAL # или IBM или IBM_REAL_PC
+  python-executable: ${QUANTUM_PYTHON_EXEC}
+  local-script-path: ${QUANTUM_LOCAL_SCRIPT_PATH}
+  local-range-script: ${QUANTUM_LOCAL_RANGE_SCRIPT_PATH}
+  ibm-script-path: ${QUANTUM_IBM_SCRIPT_PATH}
+  ibm-range-script-path: ${QUANTUM_IBM_RANGE_SCRIPT_PATH}
+  ibm-token: ${QUANTUM_IBM_TOKEN}
+  execution-mode: ${QUANTUM_MODE}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    tags-sorter: alpha
+    operations-sorter: alpha
