@@ -1,18 +1,34 @@
-FROM eclipse-temurin:17-jdk-alpine
+# Use Debian-based OpenJDK for compatibility with Qiskit
+FROM openjdk:17-slim
 
+# Set working directory
 WORKDIR /app
 
-# Установим Python и pip
-RUN apk add --no-cache python3 py3-pip build-base && \
-    pip install qiskit qiskit-ibm-runtime
+# Copy the built JAR from web module
+COPY web/target/plank-db.jar /app/plank-db.jar
 
-# Копируем исходники и Python-скрипты
-COPY ./infrastructure/target/infrastructure-*.jar ./app.jar
-COPY ./python ./python
+# Copy Python scripts
+COPY python/ /app/python/
 
-# Переменные окружения
-ENV QUANTUM_MODE=LOCAL
-ENV QUANTUM_PYTHON_EXEC=python3
+# Install Python 3, pip, and system build tools
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Запуск
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Install Qiskit and IBM Runtime SDK
+RUN pip3 install --upgrade pip && \
+    pip3 install qiskit qiskit-ibm-runtime
+
+# Expose Spring Boot port
+EXPOSE 8085
+
+# Use ENV vars for profile
+ENV SPRING_PROFILES_ACTIVE=default
+
+# Run Spring Boot app
+ENTRYPOINT ["java", "-jar", "plank-db.jar"]

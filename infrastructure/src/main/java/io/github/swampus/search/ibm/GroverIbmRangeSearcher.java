@@ -15,7 +15,7 @@ public class GroverIbmRangeSearcher extends AbstractGroverRangeSearcher {
         return new String[]{
                 getQuantumConfig().getPythonExecutable(),
                 getQuantumConfig().getIbmRangeScriptPath(),
-                getQuantumConfig().getIbmToken(),
+                getQuantumConfig().getQuantumIbmToken(),
                 fromKey,
                 toKey,
                 keysJson

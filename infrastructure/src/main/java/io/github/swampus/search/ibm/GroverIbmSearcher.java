@@ -15,7 +15,7 @@ public class GroverIbmSearcher extends AbstractGroverSearcher {
         return new String[] {
                 getConfig().getPythonExecutable(),
                 getConfig().getIbmScriptPath(),
-                getConfig().getIbmToken(),
+                getConfig().getQuantumIbmToken(),
                 key,
                 keysJson
         };

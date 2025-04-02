@@ -14,11 +14,11 @@ public class QuantumConfig {
         System.out.println("QuantumConfig loaded: " + this);
     }
     private String pythonExecutable;
-    private String ibmToken;
+    private String quantumIbmToken;
     private String ibmScriptPath;
     private String localScriptPath;
     private String ibmRangeScriptPath;
     private String localRangeScriptPath;
-    private ExecutionMode executionMode;
+    private ExecutionMode quantumExecutionMode;
 
 }

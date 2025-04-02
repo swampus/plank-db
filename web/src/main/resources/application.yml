@@ -8,7 +8,8 @@ quantum:
   ibm-script-path: ${QUANTUM_IBM_SCRIPT_PATH}
   ibm-range-script-path: ${QUANTUM_IBM_RANGE_SCRIPT_PATH}
   ibm-token: ${QUANTUM_IBM_TOKEN}
-  execution-mode: ${QUANTUM_MODE}
+  quantum-execution-mode: ${QUANTUM_EXECUTION_MODE}
+
 
 springdoc:
   api-docs:
