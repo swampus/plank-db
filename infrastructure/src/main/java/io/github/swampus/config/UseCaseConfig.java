@@ -59,7 +59,7 @@ public class UseCaseConfig {
             ObjectMapper objectMapper,
             QuantumConfig config) {
 
-        return switch (config.getExecutionMode()) {
+        return switch (config.getQuantumExecutionMode()) {
             case LOCAL -> new GroverLocalSearcher(config, objectMapper);
             case IBM, IBM_REAL_PC -> new GroverIbmSearcher(config, objectMapper);
         };
@@ -70,7 +70,7 @@ public class UseCaseConfig {
             ObjectMapper objectMapper,
             QuantumConfig config) {
 
-        return switch (config.getExecutionMode()) {
+        return switch (config.getQuantumExecutionMode()) {
             case LOCAL -> new GroverLocalRangeSearcher(config, objectMapper);
             case IBM, IBM_REAL_PC -> new GroverIbmRangeSearcher(config, objectMapper);
         };

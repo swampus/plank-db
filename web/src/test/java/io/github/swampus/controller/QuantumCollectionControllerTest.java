@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
@@ -28,6 +29,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(QuantumCollectionController.class)
 @Import({UseCaseConfig.class, QuantumConfig.class})
+@TestPropertySource(properties = {
+        "quantum.quantum-execution-mode=LOCAL",
+        "quantum.python-executable=/usr/bin/python3",
+        "quantum.local-script-path=python/grover.py",
+        "quantum.local-range-script=python/grover_range.py",
+        "quantum.ibm-script-path=python/grover_ibm.py",
+        "quantum.ibm-range-script-path=python/grover_range_ibm.py",
+        "quantum.ibm-token=dummy_token"
+})
 class QuantumCollectionControllerTest {
 
     @Autowired
@@ -121,7 +131,7 @@ class QuantumCollectionControllerTest {
 
     @Test
     void testCreateCollectionReturnsOk() throws Exception {
-        mockMvc.perform(post("/api/rest/v1/collections/test/create"))
+        mockMvc.perform(post("/api/rest/v1/collections/test"))
                 .andExpect(status().isOk());
 
         verify(createCollectionUseCase).execute("test");
