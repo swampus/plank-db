@@ -1,12 +1,12 @@
-package io.github.swampus.search.ibm;
+package io.github.swampus.qunatum.search.local;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
 import io.github.swampus.search.AbstractGroverRangeSearcher;
 
-public class GroverIbmRangeSearcher extends AbstractGroverRangeSearcher {
+public class GroverLocalRangeSearcher extends AbstractGroverRangeSearcher {
 
-    public GroverIbmRangeSearcher(QuantumConfig quantumConfig, ObjectMapper objectMapper) {
+    public GroverLocalRangeSearcher(QuantumConfig quantumConfig, ObjectMapper objectMapper) {
         super(objectMapper, quantumConfig);
     }
 
@@ -14,8 +14,7 @@ public class GroverIbmRangeSearcher extends AbstractGroverRangeSearcher {
     protected String[] buildCommand(String fromKey, String toKey, String keysJson) {
         return new String[]{
                 getQuantumConfig().getPythonExecutable(),
-                getQuantumConfig().getIbmRangeScriptPath(),
-                getQuantumConfig().getQuantumIbmToken(),
+                getQuantumConfig().getLocalRangeScriptPath(),
                 fromKey,
                 toKey,
                 keysJson

@@ -1,72 +1,71 @@
 import sys
 import json
-import traceback
-
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler
-from qiskit import QuantumCircuit
-from qiskit.circuit.library import ZGate
 from qiskit_algorithms import Grover, AmplificationProblem
+from qiskit.circuit.library import PhaseOracle
 
-try:
-    if len(sys.argv) < 4:
-        print("NOT_FOUND", flush=True)
-        sys.exit(1)
+# Exit codes
+EXIT_SUCCESS = 0
+EXIT_COLLECTION_NOT_FOUND = 2
+EXIT_INVALID_INPUT = 3
+EXIT_INTERNAL_ERROR = 4
 
-    # --- Parse input arguments ---
-    token = sys.argv[1]
-    search_key = sys.argv[2]
-    keys_json = sys.argv[3]
 
-    keys = json.loads(keys_json)
+def encode_items(items):
+    encoding = {}
+    decoding = {}
+    for i, item in enumerate(items):
+        binary = format(i, f"0{(len(items)-1).bit_length()}b")
+        encoding[item] = binary
+        decoding[binary] = item
+    return encoding, decoding, (len(items)-1).bit_length()
 
-    # --- Authenticate with IBM Quantum ---
-    service = QiskitRuntimeService(channel="ibm_quantum", token=token)
 
-    backend = service.backend("ibmq_qasm_simulator")  # can be changed to a real backend
-    sampler = Sampler(backend=backend)
+def build_oracle(target_binary):
+    return PhaseOracle(f"(x{target_binary})")
 
-    # --- Determine number of qubits ---
-    num_qubits = len(keys).bit_length()
 
-    # --- Build key -> index mapping ---
-    key_index = {key: i for i, key in enumerate(keys)}
-    target_index = key_index.get(search_key, None)
+def main():
+    try:
+        if len(sys.argv) != 4:
+            print("Usage: grover_ibm.py <key> <json> <ibm_token>", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
 
-    if target_index is None:
-        print("NOT_FOUND", flush=True)
-        sys.exit(0)
+        target_key = sys.argv[1]
 
-    # --- Create Grover oracle circuit ---
-    oracle = QuantumCircuit(num_qubits)
-    binary = format(target_index, f'0{num_qubits}b')
+        try:
+            items = json.loads(sys.argv[2])
+        except json.JSONDecodeError:
+            print("Invalid JSON format", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
 
-    for i, bit in enumerate(reversed(binary)):
-        if bit == '0':
-            oracle.x(i)
+        if not isinstance(items, list):
+            print("Expected a list of items", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
 
-    oracle.append(ZGate(), [i for i in range(num_qubits)])
+        if target_key not in items:
+            print("CollectionNotFound", file=sys.stderr)
+            sys.exit(EXIT_COLLECTION_NOT_FOUND)
 
-    for i, bit in enumerate(reversed(binary)):
-        if bit == '0':
-            oracle.x(i)
+        ibm_token = sys.argv[3]
+        QiskitRuntimeService.save_account(channel="ibm_quantum", token=ibm_token, overwrite=True)
+        service = QiskitRuntimeService()
 
-    oracle_gate = oracle.to_gate(label="Oracle")
+        encoding, decoding, n_bits = encode_items(items)
+        target_binary = encoding[target_key]
+        oracle = build_oracle(target_binary)
 
-    # --- Create the problem and run Grover ---
-    problem = AmplificationProblem(oracle_gate)
-    grover = Grover(sampler=sampler)
+        sampler = Sampler(service=service, backend="ibmq_qasm_simulator")
+        grover = Grover(sampler=sampler)
+        problem = AmplificationProblem(oracle)
+        result = grover.amplify(problem)
+        top = max(result.circuit_results.items(), key=lambda x: x[1])[0]
+        print(decoding.get(top, "NOT_FOUND"))
 
-    result = grover.amplify(problem)
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}", file=sys.stderr)
+        sys.exit(EXIT_INTERNAL_ERROR)
 
-    # --- Extract top result ---
-    top_measurement = max(result.assignment_counts, key=result.assignment_counts.get)
-    found_index = int(top_measurement, 2)
 
-    found_key = keys[found_index] if found_index < len(keys) else "NOT_FOUND"
-
-    print(found_key, flush=True)
-
-except Exception:
-    traceback.print_exc()
-    print("NOT_FOUND", flush=True)
-    sys.exit(1)
+if __name__ == "__main__":
+    main()

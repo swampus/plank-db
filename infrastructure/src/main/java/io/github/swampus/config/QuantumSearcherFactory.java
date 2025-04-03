@@ -2,8 +2,8 @@ package io.github.swampus.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.ports.QuantumSearcher;
-import io.github.swampus.search.ibm.GroverIbmSearcher;
-import io.github.swampus.search.local.GroverLocalSearcher;
+import io.github.swampus.qunatum.search.ibm.GroverIbmSearcher;
+import io.github.swampus.qunatum.search.local.GroverLocalSearcher;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

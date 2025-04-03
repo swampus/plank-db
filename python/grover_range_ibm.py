@@ -1,55 +1,85 @@
 import sys
 import json
-import os
-from qiskit_ibm_runtime import QiskitRuntimeService, Session
-from qiskit.algorithms import Grover
+from qiskit_ibm_runtime import QiskitRuntimeService, Sampler
+from qiskit_algorithms import Grover, AmplificationProblem
 from qiskit.circuit.library import PhaseOracle
 
-# Load arguments
-# Argument 1: all available keys as a JSON array
-# Argument 2: lower bound of the key range
-# Argument 3: upper bound of the key range
-keys_json = sys.argv[1]
-from_key = sys.argv[2]
-to_key = sys.argv[3]
+# Exit codes
+EXIT_SUCCESS = 0
+EXIT_COLLECTION_NOT_FOUND = 2
+EXIT_INVALID_INPUT = 3
+EXIT_INTERNAL_ERROR = 4
 
-# Load IBM Quantum API token from environment variable
-api_key = os.getenv("QISKIT_IBM_TOKEN")
-if not api_key:
-    print("Error: QISKIT_IBM_TOKEN environment variable is not set.")
-    sys.exit(1)
 
-# Deserialize input keys and sort
-keys = json.loads(keys_json)
-keys.sort()
+def encode_items(items):
+    encoding = {}
+    decoding = {}
+    for i, item in enumerate(items):
+        binary = format(i, f"0{(len(items)-1).bit_length()}b")
+        encoding[item] = binary
+        decoding[binary] = item
+    return encoding, decoding, (len(items)-1).bit_length()
 
-# Select keys within the specified range
-filtered_keys = [k for k in keys if from_key <= k <= to_key]
 
-# Exit early if no keys match the range
-if not filtered_keys:
-    sys.exit(0)
+def build_oracle(min_val, max_val, encoding):
+    # Строим дизъюнкцию по диапазону
+    terms = [encoding[item] for item in encoding if min_val <= item <= max_val]
+    if not terms:
+        raise ValueError("No items in range")
+    expression = " or ".join([f"x{t}" for t in terms])
+    return PhaseOracle(f"({expression})")
 
-# Determine the number of bits needed to represent key indices
-n_bits = len(bin(len(keys) - 1)[2:])
 
-# Construct Grover's oracle expression for selected keys
-oracle_expression = " or ".join([
-    f'x == "{bin(i)[2:].zfill(n_bits)}"'
-    for i, k in enumerate(keys) if k in filtered_keys
-])
+def main():
+    try:
+        if len(sys.argv) != 5:
+            print("Usage: grover_range_ibm.py <min> <max> <json> <ibm_token>", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
 
-# Build the oracle circuit
-oracle = PhaseOracle(oracle_expression)
-grover = Grover(oracle=oracle)
+        try:
+            min_val = int(sys.argv[1])
+            max_val = int(sys.argv[2])
+        except ValueError:
+            print("Invalid range parameters", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
 
-# Connect to IBM Quantum backend
-service = QiskitRuntimeService(channel="ibm_quantum", token=api_key)
-backend = service.least_busy(simulator=True)  # Use the least busy simulator
+        try:
+            items = json.loads(sys.argv[3])
+        except json.JSONDecodeError:
+            print("Invalid JSON format", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
 
-# Run Grover's algorithm within an IBM Quantum session
-with Session(service=service, backend=backend) as session:
-    result = grover.run()
-    bitstring = result["assignment"]
-    index = int(bitstring, 2)
-    print(keys[index])  # Output the matched key
+        if not isinstance(items, list):
+            print("Expected a list of items", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
+
+        if not items:
+            print("Empty collection", file=sys.stderr)
+            sys.exit(EXIT_COLLECTION_NOT_FOUND)
+
+        ibm_token = sys.argv[4]
+        QiskitRuntimeService.save_account(channel="ibm_quantum", token=ibm_token, overwrite=True)
+        service = QiskitRuntimeService()
+
+        encoding, decoding, n_bits = encode_items(items)
+
+        try:
+            oracle = build_oracle(min_val, max_val, encoding)
+        except Exception:
+            print("CollectionNotFound in range", file=sys.stderr)
+            sys.exit(EXIT_COLLECTION_NOT_FOUND)
+
+        sampler = Sampler(service=service, backend="ibmq_qasm_simulator")
+        grover = Grover(sampler=sampler)
+        problem = AmplificationProblem(oracle)
+        result = grover.amplify(problem)
+        top = max(result.circuit_results.items(), key=lambda x: x[1])[0]
+        print(decoding.get(top, "NOT_FOUND"))
+
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}", file=sys.stderr)
+        sys.exit(EXIT_INTERNAL_ERROR)
+
+
+if __name__ == "__main__":
+    main()

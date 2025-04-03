@@ -1,9 +1,8 @@
-package io.github.swampus.search.python;
+package io.github.swampus.qunatum.search.python;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
 import io.github.swampus.config.QuantumProperties;
-import io.github.swampus.ports.QuantumSearcher;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
