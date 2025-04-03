@@ -1,4 +1,4 @@
-package io.github.swampus.search;
+package io.github.swampus.qunatum.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;

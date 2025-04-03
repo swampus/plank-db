@@ -2,7 +2,7 @@ package io.github.swampus.qunatum.search.ibm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
-import io.github.swampus.search.AbstractGroverRangeSearcher;
+import io.github.swampus.qunatum.search.AbstractGroverRangeSearcher;
 
 public class GroverIbmRangeSearcher extends AbstractGroverRangeSearcher {
 
