@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Optional;
+
 
 @ConfigurationProperties(prefix = "quantum")
 @Getter
@@ -22,14 +24,12 @@ public class QuantumConfig {
 
     @PostConstruct
     public void validate() {
-        System.out.println("\n AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         if (isNullOrBlank(pythonExecutable)) {
             throw new IllegalStateException("QUANTUM_PYTHON_EXEC is not set.");
         }
         if (quantumExecutionMode == null) {
             throw new IllegalStateException("QUANTUM_EXECUTION_MODE is not set.");
         }
-
         switch (quantumExecutionMode) {
             case LOCAL -> {
                 check("QUANTUM_LOCAL_SCRIPT_PATH", localScriptPath);
@@ -52,4 +52,5 @@ public class QuantumConfig {
     private boolean isNullOrBlank(String value) {
         return value == null || value.isBlank();
     }
+
 }

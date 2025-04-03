@@ -1,8 +1,10 @@
 package io.github.swampus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.swampus.config.ExecutionMode;
 import io.github.swampus.config.QuantumConfig;
 import io.github.swampus.config.UseCaseConfig;
+import io.github.swampus.controller.config.TestQuantumConfig;
 import io.github.swampus.dto.AddEntryRequest;
 import io.github.swampus.dto.DeleteEntryRequest;
 import io.github.swampus.dto.RangeQueryRequest;
@@ -11,7 +13,9 @@ import io.github.swampus.usecase.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -28,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(QuantumCollectionController.class)
-@Import({UseCaseConfig.class, QuantumConfig.class})
+@Import({UseCaseConfig.class})
 @TestPropertySource(properties = {
         "quantum.quantum-execution-mode=LOCAL",
         "quantum.python-executable=/usr/bin/python3",
@@ -143,5 +147,18 @@ class QuantumCollectionControllerTest {
                 .andExpect(status().isOk());
 
         verify(deleteCollectionUseCase).execute("test");
+    }
+
+    @TestConfiguration
+    static class QuantumTestConfig {
+        @Bean
+        public QuantumConfig quantumConfig() {
+            TestQuantumConfig config = new TestQuantumConfig();
+            config.setQuantumExecutionMode(ExecutionMode.LOCAL);
+            config.setPythonExecutable("/usr/bin/python3");
+            config.setLocalScriptPath("python/grover.py");
+            config.setLocalRangeScriptPath("python/grover_range.py");
+            return config;
+        }
     }
 }

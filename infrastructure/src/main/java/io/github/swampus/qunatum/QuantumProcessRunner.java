@@ -18,26 +18,32 @@ public class QuantumProcessRunner implements QuantumScriptExecutor {
     @Override
     public String run(String script, List<String> args) {
         try {
-            List<String> command = new ArrayList<>();
-            command.add("python");
-            command.add(script);
-            command.addAll(args);
+            var command = createCommand(script, args);
 
-            ProcessBuilder pb = new ProcessBuilder(command);
+            var pb = new ProcessBuilder(command);
             pb.redirectErrorStream(false);
-            Process process = pb.start();
 
-            String stdout = new BufferedReader(new InputStreamReader(process.getInputStream()))
+            var process = pb.start();
+
+            var stdout = new BufferedReader(new InputStreamReader(process.getInputStream()))
                     .lines().collect(Collectors.joining("\n"));
-            String stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()))
+            var stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()))
                     .lines().collect(Collectors.joining("\n"));
 
-            int exitCode = process.waitFor();
+            var exitCode = process.waitFor();
             return handleResult(exitCode, stdout, stderr);
 
         } catch (IOException | InterruptedException e) {
             throw new AppException("Failed to execute quantum script: " + e.getMessage(), e);
         }
+    }
+
+    private List<String> createCommand(String script, List<String> args) {
+        List<String> command = new ArrayList<>();
+        command.add("python");
+        command.add(script);
+        command.addAll(args);
+        return command;
     }
 
     private String handleResult(int exitCode, String stdout, String stderr) {

@@ -1,50 +1,44 @@
 package io.github.swampus.qunatum.search;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
+import io.github.swampus.exception.QuantumInvalidInputException;
 import io.github.swampus.ports.QuantumRangeSearcher;
+import io.github.swampus.qunatum.QuantumProcessRunner;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
 public abstract class AbstractGroverRangeSearcher implements QuantumRangeSearcher {
 
-    private ObjectMapper objectMapper;
-    private QuantumConfig quantumConfig;
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private final QuantumProcessRunner runner;
+    private final ObjectMapper objectMapper;
+    private final QuantumConfig config;
 
     @Override
     public Optional<String> searchInRange(Set<String> keys, String fromKey, String toKey) {
         try {
-            String keysJson = objectMapper.writeValueAsString(keys);
-            String[] command = buildCommand(fromKey, toKey, keysJson);
-            Process process = new ProcessBuilder(command).start();
-
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    logger.info(getClass().getSimpleName() + " Output: " + line);
-                    if (!line.isBlank() && !line.startsWith("DEBUG")) {
-                        return Optional.of(line);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Error during quantum range search", e);
+            String json = objectMapper.writeValueAsString(keys);
+            String result = runner.run(
+                    config.getPythonExecutable(),
+                    buildArgs(fromKey, toKey, json)
+            );
+            return Optional.ofNullable(result);
+        } catch (JsonProcessingException e) {
+            throw new QuantumInvalidInputException("Failed to serialize input keys to JSON", e);
         }
-        return Optional.empty();
     }
+    protected abstract List<String> buildArgs(String fromKey, String toKey, String json);
 
-    protected abstract String[] buildCommand(String fromKey, String toKey, String keysJson);
-
-    public QuantumConfig getQuantumConfig() {
-        return quantumConfig;
+    public QuantumConfig getConfig() {
+        return config;
     }
 }
+
+
