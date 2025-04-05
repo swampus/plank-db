@@ -11,14 +11,16 @@ COPY web/target/plank-db.jar /app/plank-db.jar
 COPY python/ /app/python/
 
 # Install Python 3, pip, and system build tools
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     python3-venv \
     build-essential \
     curl \
     git \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Qiskit and IBM Runtime SDK
 RUN pip3 install --upgrade pip && \

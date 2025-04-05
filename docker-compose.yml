@@ -6,13 +6,7 @@ services:
     container_name: plank-db
     ports:
       - "8085:8085"
-    environment:
-      QUANTUM_EXECUTION_MODE: IBM
-      QUANTUM_PYTHON_EXECUTABLE: /usr/bin/python3
-      QUANTUM_IBM_TOKEN: ${QUANTUM_IBM_TOKEN}
-      QUANTUM_LOCAL_SCRIPT_PATH: /app/python/grover.py
-      QUANTUM_LOCAL_RANGE_SCRIPT: /app/python/grover_range.py
-      QUANTUM_IBM_SCRIPT_PATH: /app/python/grover_ibm.py
-      QUANTUM_IBM_RANGE_SCRIPT: /app/python/grover_range_ibm.py
+    env_file:
+      - .env
     volumes:
       - ./python:/app/python
