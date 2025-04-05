@@ -1,44 +1,79 @@
 import sys
 import json
-from qiskit import QuantumCircuit
-from qiskit.primitives import Sampler
-from qiskit_algorithms import Grover, AmplificationProblem
-from qiskit.circuit.library import ZGate
+from qiskit import BasicAer
+from qiskit.algorithms import Grover, AmplificationProblem
+from qiskit.circuit.library import PhaseOracle
 
-if len(sys.argv) < 4:
-    print("NOT_FOUND")
-    sys.exit(1)
+# Exit codes
+EXIT_SUCCESS = 0
+EXIT_COLLECTION_NOT_FOUND = 2
+EXIT_INVALID_INPUT = 3
+EXIT_INTERNAL_ERROR = 4
 
-from_key = sys.argv[1]
-to_key = sys.argv[2]
-keys = json.loads(sys.argv[3])
 
-# Convert to index range
-matching_indices = [i for i, key in enumerate(keys) if from_key <= key <= to_key]
-if not matching_indices:
-    print("NOT_FOUND")
-    sys.exit(0)
+def encode_items(items):
+    encoding = {}
+    decoding = {}
+    for i, item in enumerate(items):
+        binary = format(i, f"0{(len(items)-1).bit_length()}b")
+        encoding[item] = binary
+        decoding[binary] = item
+    return encoding, decoding, (len(items)-1).bit_length()
 
-num_qubits = len(keys).bit_length()
-oracle = QuantumCircuit(num_qubits)
 
-# Build oracle to mark all matching indices
-for idx in matching_indices:
-    binary = format(idx, f'0{num_qubits}b')
-    for i, bit in enumerate(reversed(binary)):
-        if bit == '0':
-            oracle.x(i)
-    oracle.append(ZGate(), [i for i in range(num_qubits)])
-    for i, bit in enumerate(reversed(binary)):
-        if bit == '0':
-            oracle.x(i)
+def build_oracle(min_val, max_val, encoding):
+    # Строим дизъюнкцию по диапазону
+    terms = [encoding[item] for item in encoding if min_val <= item <= max_val]
+    expression = " or ".join([f"x{t}" for t in terms])
+    return PhaseOracle(f"({expression})")
 
-oracle_gate = oracle.to_gate(label="Oracle")
-problem = AmplificationProblem(oracle_gate)
-grover = Grover(sampler=Sampler())
-result = grover.amplify(problem)
 
-# Read top measurement
-top = max(result.assignment_counts, key=result.assignment_counts.get)
-index = int(top, 2)
-print(keys[index] if index < len(keys) else "NOT_FOUND")
+def main():
+    try:
+        if len(sys.argv) != 4:
+            print("Usage: grover_range.py <min> <max> <json>", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
+
+        try:
+            min_val = int(sys.argv[1])
+            max_val = int(sys.argv[2])
+        except ValueError:
+            print("Invalid range parameters", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
+
+        try:
+            items = json.loads(sys.argv[3])
+        except json.JSONDecodeError:
+            print("Invalid JSON format", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
+
+        if not isinstance(items, list):
+            print("Expected a list of items", file=sys.stderr)
+            sys.exit(EXIT_INVALID_INPUT)
+
+        if not items:
+            print("Empty collection", file=sys.stderr)
+            sys.exit(EXIT_COLLECTION_NOT_FOUND)
+
+        encoding, decoding, n_bits = encode_items(items)
+
+        try:
+            oracle = build_oracle(min_val, max_val, encoding)
+        except Exception as e:
+            print("CollectionNotFound in range", file=sys.stderr)
+            sys.exit(EXIT_COLLECTION_NOT_FOUND)
+
+        backend = BasicAer.get_backend('qasm_simulator')
+        grover = Grover(quantum_instance=backend)
+        problem = AmplificationProblem(oracle)
+        result = grover.amplify(problem)
+        top = max(result.circuit_results.items(), key=lambda x: x[1])[0]
+        print(decoding.get(top, "NOT_FOUND"))
+
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}", file=sys.stderr)
+        sys.exit(EXIT_INTERNAL_ERROR)
+
+
+if __name__ == "__main__":
+    main()
