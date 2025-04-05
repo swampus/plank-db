@@ -46,10 +46,8 @@ class QuantumCollectionControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @MockBean
     private AddEntryUseCase addEntryUseCase;
     @MockBean
