@@ -1,7 +1,5 @@
 package io.github.swampus.model;
 
-import lombok.Builder;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
