@@ -1,15 +1,19 @@
 package io.github.swampus.qunatum.search;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
+import io.github.swampus.exception.QuantumExternalServiceException;
 import io.github.swampus.exception.QuantumInvalidInputException;
+import io.github.swampus.model.QuantumResultModel;
 import io.github.swampus.ports.QuantumRangeSearcher;
 import io.github.swampus.qunatum.QuantumProcessRunner;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,16 +26,22 @@ public abstract class AbstractGroverRangeSearcher implements QuantumRangeSearche
     private final QuantumConfig config;
 
     @Override
-    public Optional<String> searchInRange(Set<String> keys, String fromKey, String toKey) {
+    public QuantumResultModel searchInRange(Set<String> keys, String fromKey, String toKey) {
         try {
-            String json = objectMapper.writeValueAsString(keys);
-            String result = runner.run(
-                    config.getPythonExecutable(),
-                    buildArgs(fromKey, toKey, json)
-            );
-            return Optional.ofNullable(result);
+            String jsonKeys = objectMapper.writeValueAsString(keys);
+            List<String> args = buildArgs(fromKey, toKey, jsonKeys);
+
+            String scriptPath = getResolvedScriptPath(true);
+            String result = runner.run(scriptPath, args);
+            System.out.println("REZA: " + result);
+
+            JsonNode json = objectMapper.readTree(result);
+            System.out.println("json: " + json);
+
+            return objectMapper.treeToValue(json, QuantumResultModel.class);
+
         } catch (JsonProcessingException e) {
-            throw new QuantumInvalidInputException("Failed to serialize input keys to JSON", e);
+            throw new QuantumInvalidInputException("Failed to serialize input keys or parse output " + e.getMessage(), e);
         }
     }
     protected abstract List<String> buildArgs(String fromKey, String toKey, String json);
@@ -39,6 +49,8 @@ public abstract class AbstractGroverRangeSearcher implements QuantumRangeSearche
     public QuantumConfig getConfig() {
         return config;
     }
+
+    protected abstract String getResolvedScriptPath(boolean isRange);
 }
 
 

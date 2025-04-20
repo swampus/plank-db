@@ -16,9 +16,16 @@ import java.util.stream.Collectors;
 public class QuantumProcessRunner implements QuantumScriptExecutor {
 
     @Override
-    public String run(String script, List<String> args) {
+    public String run(String scriptPath, List<String> args) {
         try {
-            var command = createCommand(script, args);
+            String pythonExec = System.getenv("QUANTUM_PYTHON_EXEC");
+
+            List<String> command = new ArrayList<>();
+            command.add(pythonExec);
+            command.add(scriptPath);
+            command.addAll(args);
+
+            System.out.println("Executing command: " + String.join(" ", command));
 
             var pb = new ProcessBuilder(command);
             pb.redirectErrorStream(false);
@@ -38,14 +45,6 @@ public class QuantumProcessRunner implements QuantumScriptExecutor {
         }
     }
 
-    private List<String> createCommand(String script, List<String> args) {
-        List<String> command = new ArrayList<>();
-        command.add("python");
-        command.add(script);
-        command.addAll(args);
-        return command;
-    }
-
     private String handleResult(int exitCode, String stdout, String stderr) {
         return switch (exitCode) {
             case 0 -> stdout;
@@ -55,6 +54,4 @@ public class QuantumProcessRunner implements QuantumScriptExecutor {
             default -> throw new AppException("Unexpected error (exit " + exitCode + "): " + stderr);
         };
     }
-
 }
-

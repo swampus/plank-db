@@ -7,7 +7,7 @@ quantum:
   local-range-script: ${QUANTUM_LOCAL_RANGE_SCRIPT_PATH}
   ibm-script-path: ${QUANTUM_IBM_SCRIPT_PATH}
   ibm-range-script-path: ${QUANTUM_IBM_RANGE_SCRIPT_PATH}
-  ibm-token: ${QUANTUM_IBM_TOKEN}
+  quantum-ibm-token: ${QUANTUM_IBM_TOKEN}
   quantum-execution-mode: ${QUANTUM_EXECUTION_MODE}
 
 

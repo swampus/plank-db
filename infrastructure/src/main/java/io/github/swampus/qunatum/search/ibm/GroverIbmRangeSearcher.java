@@ -23,4 +23,9 @@ public class GroverIbmRangeSearcher extends AbstractGroverRangeSearcher {
                 getConfig().getQuantumIbmToken()
         );
     }
+
+    @Override
+    protected String getResolvedScriptPath(boolean isRange) {
+        return getConfig().getIbmRangeScriptPath();
+    }
 }

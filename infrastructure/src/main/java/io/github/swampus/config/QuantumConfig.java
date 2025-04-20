@@ -50,4 +50,25 @@ public class QuantumConfig {
         return value == null || value.isBlank();
     }
 
+
+    public String resolveScriptPath(boolean isRange) {
+        return switch (quantumExecutionMode) {
+            case LOCAL -> isRange ? localRangeScriptPath : localScriptPath;
+            case IBM -> isRange ? ibmRangeScriptPath : ibmScriptPath;
+            case IBM_REAL_PC -> throw new UnsupportedOperationException("IBM_REAL_PC mode requires dynamic script handling");
+        };
+    }
+    
+    @Override
+    public String toString() {
+        return "QuantumConfig{" +
+                "pythonExecutable='" + pythonExecutable + '\'' +
+                ", quantumIbmToken='" + quantumIbmToken + '\'' +
+                ", ibmScriptPath='" + ibmScriptPath + '\'' +
+                ", localScriptPath='" + localScriptPath + '\'' +
+                ", ibmRangeScriptPath='" + ibmRangeScriptPath + '\'' +
+                ", localRangeScriptPath='" + localRangeScriptPath + '\'' +
+                ", quantumExecutionMode=" + quantumExecutionMode +
+                '}';
+    }
 }

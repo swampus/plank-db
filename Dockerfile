@@ -1,36 +1,56 @@
-# Use Debian-based OpenJDK for compatibility with Qiskit
+# ✅ Base image with OpenJDK 17 (for Spring Boot)
 FROM openjdk:17-slim
 
-# Set working directory
+# ✅ Set working directory inside the container
 WORKDIR /app
 
-# Copy the built JAR from web module
-COPY web/target/plank-db.jar /app/plank-db.jar
+# ✅ Copy Java backend (REST API)
+COPY web/target/plank-db.jar ./plank-db.jar
 
-# Copy Python scripts
-COPY python/ /app/python/
+# ✅ Copy Python code (Grover, etc.)
+COPY python/ ./python/
 
-# Install Python 3, pip, and system build tools
+COPY .env /app/.env
+
+# ✅ Install essential Debian packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
     python3 \
     python3-pip \
     python3-venv \
     build-essential \
-    curl \
-    git \
-    && apt-get clean && \
+    gcc \
+    g++ \
+    libopenblas-dev \
+    liblapack-dev \
+    libomp-dev \
+    git && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Qiskit and IBM Runtime SDK
-RUN pip3 install --upgrade pip && \
-    pip3 install qiskit qiskit-ibm-runtime
+# ✅ Upgrade pip (recommended by Qiskit)
+RUN pip3 install --no-cache-dir --upgrade pip
 
-# Expose Spring Boot port
-EXPOSE 8085
+# ✅ Install Qiskit + IBM Runtime V2 support
+RUN pip3 install --no-cache-dir \
+    "qiskit~=1.0" \
+    "qiskit-aer" \
+    "qiskit-algorithms" \
+    "qiskit-ibm-runtime>=0.24.0" \
+    "tweedledum" \
+    "python-dotenv" \
+    "numpy==1.26.4"
 
-# Use ENV vars for profile
+# ✅ Set Python module path for import
+ENV PYTHONPATH=/app/python
+
+# ✅ Set Spring Boot profile if needed
 ENV SPRING_PROFILES_ACTIVE=default
 
-# Run Spring Boot app
+# ✅ Expose Java application port
+EXPOSE 8085
+
+# ✅ Launch Java REST API
 ENTRYPOINT ["java", "-jar", "plank-db.jar"]

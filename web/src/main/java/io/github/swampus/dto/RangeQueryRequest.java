@@ -1,10 +1,13 @@
 package io.github.swampus.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class RangeQueryRequest {
-    private String collectionName;
+    @JsonProperty("fromKey")
     private String fromKey;
+
+    @JsonProperty("toKey")
     private String toKey;
 }

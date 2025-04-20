@@ -16,10 +16,14 @@ public class GroverLocalRangeSearcher extends AbstractGroverRangeSearcher {
     @Override
     protected List<String> buildArgs(String fromKey, String toKey, String keysJson) {
         return List.of(
-                getConfig().getLocalRangeScriptPath(),
                 fromKey,
                 toKey,
                 keysJson
         );
+    }
+
+    @Override
+    protected String getResolvedScriptPath(boolean isRange) {
+        return getConfig().getLocalRangeScriptPath();
     }
 }

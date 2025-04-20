@@ -6,6 +6,8 @@ import io.github.swampus.qunatum.QuantumProcessRunner;
 import io.github.swampus.qunatum.search.AbstractGroverSearcher;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class GroverLocalSearcher extends AbstractGroverSearcher {
 
@@ -14,11 +16,17 @@ public class GroverLocalSearcher extends AbstractGroverSearcher {
     }
 
     @Override
-    protected List<String> buildArgs(String key, String keysJson) {
+    protected List<String> buildArgs(String key, String keysJson, String entriesJson) {
         return List.of(
-                getConfig().getLocalScriptPath(),
                 key,
-                keysJson
+                keysJson,
+                entriesJson,
+                "--backend=local"
         );
+    }
+
+    @Override
+    protected String getResolvedScriptPath(boolean isRange) {
+        return getConfig().getLocalScriptPath();
     }
 }

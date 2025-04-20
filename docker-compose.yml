@@ -10,3 +10,5 @@ services:
       - .env
     volumes:
       - ./python:/app/python
+    environment:
+      PYTHONPATH: /app/python

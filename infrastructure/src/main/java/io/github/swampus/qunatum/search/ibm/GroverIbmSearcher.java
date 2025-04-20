@@ -15,12 +15,18 @@ public class GroverIbmSearcher extends AbstractGroverSearcher {
     }
 
     @Override
-    protected List<String> buildArgs(String key, String keysJson) {
+    protected List<String> buildArgs(String key, String keysJson, String entriesJson) {
         return List.of(
-                getConfig().getIbmScriptPath(),
                 key,
                 keysJson,
-                getConfig().getQuantumIbmToken()
+                entriesJson,
+                "--backend=ibm",
+                "--ibm-backend=ibm_brisbane"
         );
+    }
+
+    @Override
+    protected String getResolvedScriptPath(boolean isRange) {
+        return getConfig().getIbmScriptPath();
     }
 }

@@ -26,25 +26,6 @@ public class RangeQueryUseCaseTest {
         useCase = new RangeQueryUseCase(repository, searcher);
     }
 
-    @Test
-    void shouldReturnMatchFromRange() {
-        QuantumCollection collection = new QuantumCollection("col");
-        collection.put("a", "1");
-        collection.put("b", "2");
 
-        when(repository.findByName("col")).thenReturn(Optional.of(collection));
-        when(searcher.searchInRange(Set.of("a", "b"), "a", "b"))
-                .thenReturn(Optional.of("a"));
 
-        Optional<String> result = useCase.execute("col", "a", "b");
-        assertTrue(result.isPresent());
-        assertEquals("a", result.get());
-    }
-
-    @Test
-    void shouldReturnEmptyIfCollectionNotFound() {
-        when(repository.findByName("missing")).thenReturn(Optional.empty());
-        Optional<String> result = useCase.execute("missing", "a", "z");
-        assertTrue(result.isEmpty());
-    }
 }

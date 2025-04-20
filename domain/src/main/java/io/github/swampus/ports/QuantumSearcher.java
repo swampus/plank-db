@@ -1,8 +1,9 @@
 package io.github.swampus.ports;
 
-import java.util.List;
+import io.github.swampus.model.QuantumResultModel;
+
 import java.util.Set;
 
 public interface QuantumSearcher {
-    String search(String key, Set<String> keys);
+    QuantumResultModel search(String key, Set<String> keys);
 }

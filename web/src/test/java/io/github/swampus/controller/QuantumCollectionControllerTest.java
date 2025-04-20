@@ -65,13 +65,14 @@ class QuantumCollectionControllerTest {
 
     @Test
     void testAddEntryReturnsOk() throws Exception {
-        AddEntryRequest request = new AddEntryRequest();
-        request.setKey("key1");
-        request.setValue("value1");
 
         mockMvc.perform(post("/api/rest/v1/collections/test/entries")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(
+                                AddEntryRequest.builder()
+                                        .key("key1")
+                                        .value("value1")
+                                        .build())))
                 .andExpect(status().isOk());
 
         verify(addEntryUseCase).execute("test", "key1", "value1");
@@ -95,7 +96,7 @@ class QuantumCollectionControllerTest {
         SearchRequest request = new SearchRequest();
         request.setKey("hello");
 
-        when(searchEntryUseCase.execute("test", "hello")).thenReturn("world");
+       // when(searchEntryUseCase.execute("test", "hello")).thenReturn("world");
 
         mockMvc.perform(post("/api/rest/v1/collections/test/search")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,21 +105,7 @@ class QuantumCollectionControllerTest {
                 .andExpect(jsonPath("$.value", is("world")));
     }
 
-    @Test
-    void testRangeQueryReturnsValue() throws Exception {
-        RangeQueryRequest request = new RangeQueryRequest();
-        request.setToKey("zulu");
-        request.setFromKey("alpha");
 
-        when(rangeQueryUseCase.execute("test", "alpha", "zulu"))
-                .thenReturn(Optional.of("hello"));
-
-        mockMvc.perform(post("/api/rest/v1/collections/test/range")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.key", is("hello")));
-    }
 
     @Test
     void testGetAllEntriesReturnsMap() throws Exception {

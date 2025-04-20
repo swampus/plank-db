@@ -11,9 +11,9 @@ public class QuantumProperties {
     private String pythonExecutable;
     private String groverLocalScript;
     private String groverIbmScript;
+    private String quantumIbmToken;
     private String localRangeScript;
     private String ibmRangeScript;
-    private String ibmToken;
 
     public ExecutionMode getMode() {
         return mode;
@@ -22,7 +22,6 @@ public class QuantumProperties {
     public void setMode(ExecutionMode mode) {
         this.mode = mode;
     }
-
     public String getPythonExecutable() {
         return pythonExecutable;
     }
@@ -47,14 +46,6 @@ public class QuantumProperties {
         this.groverIbmScript = groverIbmScript;
     }
 
-    public String getIbmToken() {
-        return ibmToken;
-    }
-
-    public void setIbmToken(String ibmToken) {
-        this.ibmToken = ibmToken;
-    }
-
     public String getIbmRangeScript() {
         return ibmRangeScript;
     }
@@ -69,5 +60,13 @@ public class QuantumProperties {
 
     public void setLocalRangeScript(String localRangeScript) {
         this.localRangeScript = localRangeScript;
+    }
+
+    public String getQuantumIbmToken() {
+        return quantumIbmToken;
+    }
+
+    public void setQuantumIbmToken(String quantumIbmToken) {
+        this.quantumIbmToken = quantumIbmToken;
     }
 }
