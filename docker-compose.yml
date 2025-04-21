@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  plank-db:
+    build: .
+    container_name: plank-db
+    ports:
+      - "8085:8085"
+    env_file:
+      - .env
+    volumes:
+      - ./python:/app/python
+    environment:
+      PYTHONPATH: /app/python

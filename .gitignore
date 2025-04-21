@@ -1,0 +1,39 @@
+*.log
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven
+target/
+**/target/
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env
+.venv/
+venv/
+dist/
+build/
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+
+# VS Code (если кто-то откроет там)
+.vscode/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.pid.lock
