@@ -1,0 +1,15 @@
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\config\QuantumConfigAutoConfiguration.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\config\QuantumProperties.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\search\ibm\GroverIbmSearcher.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\search\ibm\GroverIbmRangeSearcher.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\config\QuantumConfiguration.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\search\AbstractGroverSearcher.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\config\InfrastructureConfig.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\search\AbstractGroverRangeSearcher.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\repository\InMemoryQuantumCollectionRepository.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\search\local\GroverLocalRangeSearcher.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\search\local\GroverLocalSearcher.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\config\QuantumSearcherFactory.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\config\UseCaseConfig.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\config\QuantumConfig.java
+C:\work\quantum\quantum-db\infrastructure\src\main\java\io\github\swampus\search\python\AbstractPythonSearcher.java

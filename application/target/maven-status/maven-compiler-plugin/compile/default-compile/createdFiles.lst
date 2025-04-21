@@ -1,0 +1,8 @@
+io\github\swampus\usecase\DeleteEntryUseCase.class
+io\github\swampus\usecase\SearchEntryUseCase.class
+io\github\swampus\usecase\CreateCollectionUseCase.class
+io\github\swampus\config\QuantumRuntimeConfig.class
+io\github\swampus\usecase\AddEntryUseCase.class
+io\github\swampus\usecase\DeleteCollectionUseCase.class
+io\github\swampus\usecase\GetAllEntriesUseCase.class
+io\github\swampus\usecase\RangeQueryUseCase.class

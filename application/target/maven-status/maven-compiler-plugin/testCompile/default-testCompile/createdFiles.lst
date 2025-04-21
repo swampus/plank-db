@@ -1,0 +1,6 @@
+io\github\swampus\usecase\CreateCollectionUseCaseTest.class
+io\github\swampus\usecase\DeleteEntryUseCaseTest.class
+io\github\swampus\usecase\DeleteCollectionUseCaseTest.class
+io\github\swampus\usecase\RangeQueryUseCaseTest.class
+io\github\swampus\usecase\AddEntryUseCaseTest.class
+io\github\swampus\usecase\SearchEntryUseCaseTest.class

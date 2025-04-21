@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="500e8188-9803-443b-8a1d-ba887cd6e434" name="Changes" comment="- readme">
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/add_file_container.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/config/QuantumRuntimeConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/usecase/AddEntryUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/usecase/CreateCollectionUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/usecase/DeleteCollectionUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/usecase/DeleteEntryUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/usecase/GetAllEntriesUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/usecase/RangeQueryUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/main/java/io/github/swampus/usecase/SearchEntryUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/test/java/io/github/swampus/usecase/AddEntryUseCaseTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/test/java/io/github/swampus/usecase/CreateCollectionUseCaseTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/test/java/io/github/swampus/usecase/DeleteCollectionUseCaseTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/test/java/io/github/swampus/usecase/DeleteEntryUseCaseTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/test/java/io/github/swampus/usecase/RangeQueryUseCaseTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/src/test/java/io/github/swampus/usecase/SearchEntryUseCaseTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/config/ExecutionMode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/exception/AppException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/exception/CollectionNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/exception/QuantumExternalServiceException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/exception/QuantumInvalidInputException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/exception/SerializeKeyException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/model/QuantumCollection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/model/QuantumResultModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/ports/QuantumCollectionManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/ports/QuantumCollectionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/ports/QuantumRangeSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/ports/QuantumScriptExecutor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/domain/src/main/java/io/github/swampus/ports/QuantumSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/environment.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/config/InfrastructureConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/config/QuantumConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/config/QuantumConfigAutoConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/config/QuantumConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/config/QuantumProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/config/QuantumSearcherFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/config/UseCaseConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/dto/QuantumResultDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/QuantumProcessRunner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/search/AbstractGroverRangeSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/search/AbstractGroverSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/search/ibm/GroverIbmRangeSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/search/ibm/GroverIbmSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/search/local/GroverLocalRangeSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/search/local/GroverLocalSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/qunatum/search/python/AbstractPythonSearcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/main/java/io/github/swampus/repository/InMemoryQuantumCollectionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/test/java/io/github/swampus/qunatum/search/AbstractGroverSearcherTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/src/test/java/io/github/swampus/repository/InMemoryQuantumCollectionRepositoryTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/grover.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/grover_ibm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/grover_range.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/grover_range_ibm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/utilities/diagnose_ibm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/utilities/diagnose_ibm_token.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/utilities/list_python_backends.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/PlankDbApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/config/OpenAPIConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/controller/QuantumCollectionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/controller/advice/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/AddEntryRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/CreateCollectionResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/DeleteCollectionResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/DeleteEntryRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/GetAllEntriesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/RangeQueryRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/RangeQueryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/SearchRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/dto/SearchResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/java/io/github/swampus/mapper/QuantumResultMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/resources/static/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/test/java/io/github/swampus/controller/QuantumCollectionControllerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/test/java/io/github/swampus/controller/config/TestQuantumConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/test/java/io/github/swampus/mapper/QuantumResultMapperTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitRewordedCommitMessages">
+    <option name="commitMessagesMapping">
+      <RewordedCommitMessageMapping>
+        <option name="originalMessage" value="- refactoring." />
+        <option name="rewordedMessage" value="- development" />
+      </RewordedCommitMessageMapping>
+    </option>
+    <option name="currentCommit" value="1" />
+    <option name="onto" value="f11360fbc90618d98a6e140d1db29b809bd36ab6" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="workspaceImportEnabled" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2uoTGz7O7VaB23H6Ens4v0KWj6G" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/work/quantum/quantum-db/application/src/main/java/io/github/swampus/usecase&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/work/quantum/quantum-db/web/src/main/resources/static&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\work\quantum\quantum-db\web\src\main\resources\static" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\work\quantum\quantum-db\web\src\main\resources" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="io.github.swampus.controller" />
+      <recent name="io.github.swampus.usecase" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.Whole project">
+    <configuration name="PlankDbApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.github.swampus.PlankDbApplication" />
+      <module name="web" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.swampus.qunatum.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="QuantumCollectionControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="web" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.swampus.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.swampus.controller" />
+      <option name="MAIN_CLASS_NAME" value="io.github.swampus.controller.QuantumCollectionControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="QuantumCollectionControllerTest.testCreateCollectionReturnsOk" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="web" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.swampus.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.swampus.controller" />
+      <option name="MAIN_CLASS_NAME" value="io.github.swampus.controller.QuantumCollectionControllerTest" />
+      <option name="METHOD_NAME" value="testCreateCollectionReturnsOk" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Whole project" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in application" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="application" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/application/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.Whole project" />
+        <item itemvalue="JUnit.QuantumCollectionControllerTest" />
+        <item itemvalue="Application.PlankDbApplication" />
+        <item itemvalue="JUnit.java in application" />
+        <item itemvalue="JUnit.QuantumCollectionControllerTest.testCreateCollectionReturnsOk" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="500e8188-9803-443b-8a1d-ba887cd6e434" name="Changes" comment="" />
+      <created>1742913836497</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1742913836497</updated>
+    </task>
+    <task id="LOCAL-00001" summary="- git ignore">
+      <created>1742914215316</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1742914215316</updated>
+    </task>
+    <task id="LOCAL-00002" summary="- clean up">
+      <created>1742914590263</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1742914590263</updated>
+    </task>
+    <task id="LOCAL-00003" summary="- range query">
+      <created>1742936140047</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1742936140047</updated>
+    </task>
+    <task id="LOCAL-00004" summary="- tmp commit">
+      <created>1743013223798</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1743013223798</updated>
+    </task>
+    <task id="LOCAL-00005" summary="- tmp commit">
+      <created>1743079935348</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1743079935348</updated>
+    </task>
+    <task id="LOCAL-00006" summary="- refactoring">
+      <created>1743081839337</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1743081839337</updated>
+    </task>
+    <task id="LOCAL-00007" summary="- clean-up">
+      <created>1743094675251</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1743094675251</updated>
+    </task>
+    <task id="LOCAL-00008" summary="- pre start">
+      <created>1743097227273</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1743097227273</updated>
+    </task>
+    <task id="LOCAL-00009" summary="- testing happy path">
+      <created>1743196543366</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1743196543366</updated>
+    </task>
+    <task id="LOCAL-00010" summary="- swaggger">
+      <created>1743360480773</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1743360480773</updated>
+    </task>
+    <task id="LOCAL-00011" summary="- docker and documents">
+      <created>1743589947367</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1743589947367</updated>
+    </task>
+    <task id="LOCAL-00012" summary="- update error handling">
+      <created>1743702105756</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1743702105756</updated>
+    </task>
+    <task id="LOCAL-00013" summary="- refactoring">
+      <created>1743702210763</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1743702210763</updated>
+    </task>
+    <task id="LOCAL-00014" summary="- refactoring, support errors">
+      <created>1743705381253</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1743705381253</updated>
+    </task>
+    <task id="LOCAL-00015" summary="- refactoring, support errors">
+      <created>1743859725392</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1743859725392</updated>
+    </task>
+    <task id="LOCAL-00016" summary="- remove system out">
+      <created>1745241632400</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1745241632400</updated>
+    </task>
+    <task id="LOCAL-00017" summary="- readme">
+      <created>1745247926452</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1745247926452</updated>
+    </task>
+    <task id="LOCAL-00018" summary="- readme">
+      <created>1745249511389</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1745249511389</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="0fb250ef-33f7-425f-a996-c8da1f9b3790">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="0fb250ef-33f7-425f-a996-c8da1f9b3790" value="TOOL_WINDOW" />
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="- git ignore" />
+    <MESSAGE value="- clean up" />
+    <MESSAGE value="- range query" />
+    <MESSAGE value="- tmp commit" />
+    <MESSAGE value="- clean-up" />
+    <MESSAGE value="- pre start" />
+    <MESSAGE value="- testing happy path" />
+    <MESSAGE value="- swaggger" />
+    <MESSAGE value="- docker and documents" />
+    <MESSAGE value="- update error handling" />
+    <MESSAGE value="- refactoring" />
+    <MESSAGE value="- refactoring, support errors" />
+    <MESSAGE value="- remove system out" />
+    <MESSAGE value="- readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="- readme" />
+  </component>
+</project>

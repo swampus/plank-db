@@ -1,0 +1,21 @@
+server:
+  port: 8085
+
+quantum:
+  python-executable: ${QUANTUM_PYTHON_EXEC}
+  local-script-path: ${QUANTUM_LOCAL_SCRIPT_PATH}
+  local-range-script: ${QUANTUM_LOCAL_RANGE_SCRIPT_PATH}
+  ibm-script-path: ${QUANTUM_IBM_SCRIPT_PATH}
+  ibm-range-script-path: ${QUANTUM_IBM_RANGE_SCRIPT_PATH}
+  quantum-ibm-token: ${QUANTUM_IBM_TOKEN}
+  quantum-execution-mode: ${QUANTUM_EXECUTION_MODE}
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    tags-sorter: alpha
+    operations-sorter: alpha

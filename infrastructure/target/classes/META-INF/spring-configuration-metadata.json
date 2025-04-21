@@ -1,0 +1,87 @@
+{
+  "groups": [
+    {
+      "name": "quantum",
+      "type": "io.github.swampus.config.QuantumConfig",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum",
+      "type": "io.github.swampus.config.QuantumProperties",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "quantum.grover-ibm-script",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    },
+    {
+      "name": "quantum.grover-local-script",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    },
+    {
+      "name": "quantum.ibm-range-script",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    },
+    {
+      "name": "quantum.ibm-range-script-path",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum.ibm-script-path",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum.local-range-script",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    },
+    {
+      "name": "quantum.local-range-script-path",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum.local-script-path",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum.mode",
+      "type": "io.github.swampus.config.ExecutionMode",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    },
+    {
+      "name": "quantum.python-executable",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum.python-executable",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    },
+    {
+      "name": "quantum.quantum-execution-mode",
+      "type": "io.github.swampus.config.ExecutionMode",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum.quantum-ibm-token",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumConfig"
+    },
+    {
+      "name": "quantum.quantum-ibm-token",
+      "type": "java.lang.String",
+      "sourceType": "io.github.swampus.config.QuantumProperties"
+    }
+  ],
+  "hints": []
+}

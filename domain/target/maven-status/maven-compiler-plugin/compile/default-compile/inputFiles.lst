@@ -1,0 +1,12 @@
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\ports\QuantumSearcher.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\config\ExecutionMode.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\exception\QuantumInvalidInputException.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\ports\QuantumCollectionManager.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\exception\SerializeKeyException.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\exception\CollectionNotFoundException.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\exception\AppException.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\model\QuantumCollection.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\ports\QuantumCollectionRepository.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\exception\QuantumExternalServiceException.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\ports\QuantumScriptExecutor.java
+C:\work\quantum\quantum-db\domain\src\main\java\io\github\swampus\ports\QuantumRangeSearcher.java
