@@ -415,3 +415,15 @@ You are free to use, modify, and distribute the code for both commercial and non
 
 📘 Full license text is available at:  
 ➡️ [LICENSE](https://github.com/swampus/plank-db/blob/development/LICENSE)
+
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+If you’d like to help improve PlankDB:
+
+1. Fork the repository
+2. Create a new branch
+   ```bash
+   git checkout -b feature/your-feature
