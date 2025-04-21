@@ -32,12 +32,9 @@ public abstract class AbstractGroverSearcher implements QuantumSearcher {
             List<String> args = buildArgs(key, keysJson, entriesJson);
             String scriptPath = getResolvedScriptPath(false);
 
-            System.out.println("\nCONFIG: " + config);
             String result = runner.run(scriptPath, args);
-            System.out.println("\nRAW OUTPUT:\n" + result);
 
             var json = objectMapper.readTree(result);
-            System.out.println("\nParsed JSON:\n" + json.toPrettyString());
             return objectMapper.treeToValue(json, QuantumResultModel.class);
         } catch (JsonProcessingException e) {
             throw new QuantumInvalidInputException("Failed to serialize input keys or entries " + e.getMessage(), e);

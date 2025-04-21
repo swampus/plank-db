@@ -4,18 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
-import io.github.swampus.exception.QuantumExternalServiceException;
 import io.github.swampus.exception.QuantumInvalidInputException;
 import io.github.swampus.model.QuantumResultModel;
 import io.github.swampus.ports.QuantumRangeSearcher;
 import io.github.swampus.qunatum.QuantumProcessRunner;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -33,10 +28,8 @@ public abstract class AbstractGroverRangeSearcher implements QuantumRangeSearche
 
             String scriptPath = getResolvedScriptPath(true);
             String result = runner.run(scriptPath, args);
-            System.out.println("REZA: " + result);
 
             JsonNode json = objectMapper.readTree(result);
-            System.out.println("json: " + json);
 
             return objectMapper.treeToValue(json, QuantumResultModel.class);
 
