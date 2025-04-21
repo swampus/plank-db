@@ -25,7 +25,6 @@ public class QuantumProcessRunner implements QuantumScriptExecutor {
             command.add(scriptPath);
             command.addAll(args);
 
-            System.out.println("Executing command: " + String.join(" ", command));
 
             var pb = new ProcessBuilder(command);
             pb.redirectErrorStream(false);
