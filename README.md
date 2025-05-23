@@ -141,7 +141,6 @@ PlankDB is designed to run smoothly with **Docker Desktop** and `docker compose`
 To get started:
 
 ```bash
-mvn clean install      # or: make build
 docker compose up --build
 ```
 
@@ -151,6 +150,9 @@ Once running, the API will be available at:
 👉 http://localhost:8080/swagger-ui/index.html
 
 For consistent behavior across platforms, we **highly recommend using** [Docker Desktop](https://www.docker.com/products/docker-desktop/) — it's free for personal and small business use.
+
+> 🔁 **Note**: On the first attempt, `docker compose up --build` may fail due to Qiskit or network dependency issues.  
+> Simply rerunning the command usually resolves it.
 
 ---
 
@@ -163,12 +165,12 @@ However, for users who wish to run PlankDB outside of Docker, here are the recom
 #### 🔧 Step-by-step instructions:
 
 1. **Install Java 17**
-  - Recommended via [Adoptium](https://adoptium.net/)
-  - Verify with: `java -version`
+    - Recommended via [Adoptium](https://adoptium.net/)
+    - Verify with: `java -version`
 
 2. **Install Apache Maven**
-  - Official site: [https://maven.apache.org](https://maven.apache.org)
-  - Verify with: `mvn -version`
+    - Official site: [https://maven.apache.org](https://maven.apache.org)
+    - Verify with: `mvn -version`
 
 3. **Clone the repository**
    ```bash
@@ -202,13 +204,13 @@ To enable Grover-based quantum search locally:
    ```
 
 8. **Set environment variables**
-  - Either export manually or create a `.env` file in the root folder:
-    ```env
-    QUANTUM_EXECUTION_MODE=LOCAL
-    ```
+    - Either export manually or create a `.env` file in the root folder:
+      ```env
+      QUANTUM_EXECUTION_MODE=LOCAL
+      ```
 
 9. **Configure application settings**
-  - Edit `src/main/resources/application.yml` if needed for backend paths or collection settings.
+    - Edit `src/main/resources/application.yml` if needed for backend paths or collection settings.
 
 > ⚠️ Note: On some systems, Python subprocess handling or Qiskit versions may cause errors.
 > This mode is best suited for development, debugging, or integration experimentation.
