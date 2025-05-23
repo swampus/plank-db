@@ -1,4 +1,9 @@
+<p align="left">
+  <img src="plank_db_logo.png" alt="PlankDB Logo" width="220"/>
+</p>
+
 # PlankDB
+**Quantum-Accelerated Key-Value Store**
 
 ## Table of Contents
 1. [Introduction](#1-introduction)
