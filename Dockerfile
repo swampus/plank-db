@@ -1,18 +1,21 @@
-# ✅ Base image with OpenJDK 17 (for Spring Boot)
-FROM openjdk:17-slim
+# === Stage 1: Build the JAR using Maven ===
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
+WORKDIR /build
+COPY . .
+RUN mvn clean package -DskipTests
 
-# ✅ Set working directory inside the container
+# === Stage 2: Runtime container with Python + Java ===
+FROM openjdk:17-slim
 WORKDIR /app
 
-# ✅ Copy Java backend (REST API)
-COPY web/target/plank-db.jar ./plank-db.jar
+# Copy the compiled JAR from the builder stage
+COPY --from=builder /build/web/target/plank-db.jar ./plank-db.jar
 
-# ✅ Copy Python code (Grover, etc.)
+# Copy Python scripts and .env
 COPY python/ ./python/
-
 COPY .env /app/.env
 
-# ✅ Install essential Debian packages
+# Install system dependencies for Qiskit
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     apt-transport-https \
@@ -30,11 +33,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# ✅ Upgrade pip (recommended by Qiskit)
-RUN pip3 install --no-cache-dir --upgrade pip
-
-# ✅ Install Qiskit + IBM Runtime V2 support
-RUN pip3 install --no-cache-dir \
+# Upgrade pip and install Qiskit & dependencies
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir \
     "qiskit~=1.0" \
     "qiskit-aer" \
     "qiskit-algorithms" \
@@ -43,14 +44,11 @@ RUN pip3 install --no-cache-dir \
     "python-dotenv" \
     "numpy==1.26.4"
 
-# ✅ Set Python module path for import
+# Python script path
 ENV PYTHONPATH=/app/python
 
-# ✅ Set Spring Boot profile if needed
 ENV SPRING_PROFILES_ACTIVE=default
 
-# ✅ Expose Java application port
 EXPOSE 8085
 
-# ✅ Launch Java REST API
 ENTRYPOINT ["java", "-jar", "plank-db.jar"]
