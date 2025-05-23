@@ -281,12 +281,12 @@ By inverting dependencies and structuring around use cases, PlankDB remains flex
 <details>
 <summary>📘 Expand subsections</summary>
 
-- [5.1 Quantum Superposition: The Theoretical Basis](#41-quantum-superposition-the-theoretical-basis)
-- [5.2 Grover's Algorithm Explained](#42-grovers-algorithm-explained)
-- [5.3 How PlankDB Uses Grover](#43-how-plankdb-uses-grover)
-- [5.4 Probabilistic Nature of Quantum Results](#44-probabilistic-nature-of-quantum-results)
-- [5.5 When Will Quantum Search Matter?](#45-when-will-quantum-search-matter)
-- [5.6 DTO Breakdown and References](#46-dto-breakdown-and-references)
+- [5.1 Quantum Superposition: The Theoretical Basis](#51-quantum-superposition-the-theoretical-basis)
+- [5.2 Grover's Algorithm Explained](#52-grovers-algorithm-explained)
+- [5.3 How PlankDB Uses Grover](#53-how-plankdb-uses-grover)
+- [5.4 Probabilistic Nature of Quantum Results](#54-probabilistic-nature-of-quantum-results)
+- [5.5 When Will Quantum Search Matter?](#55-when-will-quantum-search-matter)
+- [5.6 DTO Breakdown and References](#56-dto-breakdown-and-references)
 
 </details>
 
