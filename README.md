@@ -3,10 +3,11 @@
 ## Table of Contents
 1. [Introduction](#1-introduction)
 2. [Project Overview](#2-project-overview)
-3. [Architecture and Code Structure](#3-architecture-and-code-structure)
-4. [Quantum Search Theory and Practice](#4-quantum-search-theory-and-practice)
-5. [Limitations and Practical Considerations](#5-limitations-and-practical-considerations)
-6. [License](#6-license)
+3. [Run](#3-project-run)
+4. [Architecture and Code Structure](#4-architecture-and-code-structure)
+5. [Quantum Search Theory and Practice](#5-quantum-search-theory-and-practice)
+6. [Limitations and Practical Considerations](#6-limitations-and-practical-considerations)
+7. [License](#7-license)
 
 
 ---
@@ -119,7 +120,102 @@ Each endpoint is documented in the Swagger UI, including:
 
 This API is suitable for both classical usage and quantum-enabled applications.
 
-## 3. Architecture and Code Structure
+## 3. Project Run
+
+### 🛠 Requirements
+
+To build and run PlankDB locally, you need the following installed:
+
+- [Java 17](https://adoptium.net/)
+- [Apache Maven](https://maven.apache.org/) – used for project compilation
+- (Optional) [`make`](https://www.gnu.org/software/make/) – used as a shortcut for build commands
+
+> **Note**: `make build` is a wrapper for `mvn clean install -DskipTests`. Maven is required in both cases.
+
+---
+
+### 🐳 Recommended: Run via Docker Compose
+
+PlankDB is designed to run smoothly with **Docker Desktop** and `docker compose`.
+
+To get started:
+
+```bash
+mvn clean install      # or: make build
+docker compose up --build
+```
+
+> ⚠️ **Java 17 is required** — newer versions (e.g. Java 21) are not compatible due to API changes.
+
+Once running, the API will be available at:  
+👉 http://localhost:8080/swagger-ui/index.html
+
+For consistent behavior across platforms, we **highly recommend using** [Docker Desktop](https://www.docker.com/products/docker-desktop/) — it's free for personal and small business use.
+
+---
+
+### 💡 Local Usage (Not Officially Supported)
+
+Local setup is possible but **not officially supported or guaranteed to work reliably**, due to differences in operating systems, Python environments, and quantum library configurations.
+
+However, for users who wish to run PlankDB outside of Docker, here are the recommended steps:
+
+#### 🔧 Step-by-step instructions:
+
+1. **Install Java 17**
+  - Recommended via [Adoptium](https://adoptium.net/)
+  - Verify with: `java -version`
+
+2. **Install Apache Maven**
+  - Official site: [https://maven.apache.org](https://maven.apache.org)
+  - Verify with: `mvn -version`
+
+3. **Clone the repository**
+   ```bash
+   git clone https://github.com/swampus/plank-db.git
+   cd plank-db
+   ```
+
+4. **Build the project using Maven**
+   ```bash
+   mvn clean package
+   ```
+
+5. **Run the application**
+   ```bash
+   java -jar target/plank-db-*.jar
+   ```
+
+#### 🧪 Quantum Execution Requirements (Optional but needed for full features)
+
+To enable Grover-based quantum search locally:
+
+6. **Install Python 3.10+ and create a virtual environment**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+   ```
+
+7. **Install Qiskit and dependencies**
+   ```bash
+   pip install -r python/requirements.txt
+   ```
+
+8. **Set environment variables**
+  - Either export manually or create a `.env` file in the root folder:
+    ```env
+    QUANTUM_EXECUTION_MODE=LOCAL
+    ```
+
+9. **Configure application settings**
+  - Edit `src/main/resources/application.yml` if needed for backend paths or collection settings.
+
+> ⚠️ Note: On some systems, Python subprocess handling or Qiskit versions may cause errors.
+> This mode is best suited for development, debugging, or integration experimentation.
+
+**For most users, Docker remains the strongly preferred method for stability and reproducibility.**
+
+## 4. Architecture and Code Structure
 
 PlankDB follows the principles of **Clean Architecture**, promoting clear separation of concerns and independence between layers. This structure improves testability, modularity, and long-term maintainability — essential qualities for both experimental and production-grade systems.
 
@@ -173,23 +269,23 @@ This design makes it easy to:
 
 By inverting dependencies and structuring around use cases, PlankDB remains flexible, extendable, and robust against changes in technology or platform.
 
-## 4. Quantum Search Theory and Practice
+## 5. Quantum Search Theory and Practice
 
 <details>
 <summary>📘 Expand subsections</summary>
 
-- [4.1 Quantum Superposition: The Theoretical Basis](#41-quantum-superposition-the-theoretical-basis)
-- [4.2 Grover's Algorithm Explained](#42-grovers-algorithm-explained)
-- [4.3 How PlankDB Uses Grover](#43-how-plankdb-uses-grover)
-- [4.4 Probabilistic Nature of Quantum Results](#44-probabilistic-nature-of-quantum-results)
-- [4.5 When Will Quantum Search Matter?](#45-when-will-quantum-search-matter)
-- [4.6 DTO Breakdown and References](#46-dto-breakdown-and-references)
+- [5.1 Quantum Superposition: The Theoretical Basis](#41-quantum-superposition-the-theoretical-basis)
+- [5.2 Grover's Algorithm Explained](#42-grovers-algorithm-explained)
+- [5.3 How PlankDB Uses Grover](#43-how-plankdb-uses-grover)
+- [5.4 Probabilistic Nature of Quantum Results](#44-probabilistic-nature-of-quantum-results)
+- [5.5 When Will Quantum Search Matter?](#45-when-will-quantum-search-matter)
+- [5.6 DTO Breakdown and References](#46-dto-breakdown-and-references)
 
 </details>
 
 ---
 
-### 4.1 Quantum Superposition: The Theoretical Basis
+### 5.1 Quantum Superposition: The Theoretical Basis
 
 At the heart of quantum computing lies the concept of **superposition** — a fundamental difference from classical computation.
 
@@ -219,7 +315,7 @@ Each possible key is mapped to a quantum state in superposition, and the oracle 
 
 ---
 
-### 4.2 Grover's Algorithm Explained
+### 5.2 Grover's Algorithm Explained
 
 Grover's algorithm allows searching an unsorted list of `N` items in approximately **√N** steps — a quadratic speedup over classical search.
 
@@ -237,7 +333,7 @@ This algorithm is implemented using Qiskit circuits — either locally (Aer simu
 
 ---
 
-### 4.3 How PlankDB Uses Grover
+### 5.3 How PlankDB Uses Grover
 
 In PlankDB, both `search` and `range` operations rely on Grover's algorithm:
 
@@ -250,7 +346,7 @@ This is not efficient for production — O(n) time to prepare the state — but 
 
 ---
 
-### 4.4 Probabilistic Nature of Quantum Results
+### 5.4 Probabilistic Nature of Quantum Results
 
 Quantum search results are inherently **probabilistic** — a correct answer is likely, but not guaranteed.
 
@@ -289,7 +385,7 @@ This DTO (`QuantumResultDTO`) includes both raw results and scientific context f
 
 ---
 
-### 4.5 When Will Quantum Search Matter?
+### 5.5 When Will Quantum Search Matter?
 
 Grover's algorithm provides meaningful advantage when:
 
@@ -303,7 +399,7 @@ However, PlankDB provides a useful demonstration of how such systems **could** w
 
 ---
 
-### 4.6 DTO Breakdown and References
+### 5.6 DTO Breakdown and References
 
 #### 📘 QuantumResultDTO: Structure Explanation
 
@@ -359,7 +455,7 @@ q_1: ———H———●————X———H———M
 - IBM Quantum Runtime: https://docs.quantum.ibm.com/run
 
 
-## 5. Limitations and Practical Considerations
+## 6. Limitations and Practical Considerations
 
 While PlankDB demonstrates the principles of quantum search in a practical Java-based application, it is subject to several real-world limitations that must be considered.
 
@@ -407,7 +503,7 @@ As quantum hardware matures and **QRAM** becomes available, systems like PlankDB
 
 Until then, PlankDB remains a valuable **educational and architectural prototype** for quantum-enhanced search systems.
 
-## 6. License
+## 7. License
 
 This project is licensed under the **MIT License** — a permissive open-source license.
 
