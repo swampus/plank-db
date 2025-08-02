@@ -1,8 +1,8 @@
 # PlankDB
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
 
-**Quantum-assisted in-memory key-value store** with Grover-powered range queries and dual-mode search (local & IBM Q backend).  
-☁️ Built with Spring Boot, Python bridge, and Qiskit integration.  
+**Quantum-assisted in-memory key-value store** bridging modern enterprise tech (Spring Boot, REST) with quantum algorithms (Grover via Qiskit).  
+Enables seamless integration of classical systems with quantum backends (local emulator or IBM Q).  
 🏆 *Featured in [Awesome Quantum Software](https://github.com/qosf/awesome-quantum-software#quantum-tools) by QOSF.*
 
 
