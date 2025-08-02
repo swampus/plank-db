@@ -1,3 +1,6 @@
+# PlankDB
+[![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
+
 <p align="left">
   <img src="plank_db_logo.png" alt="PlankDB Logo" width="220"/>
 </p>
