@@ -1,9 +1,15 @@
-# PlankDB
-[![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
-
-<p align="left">
-  <img src="plank_db_logo.png" alt="PlankDB Logo" width="220"/>
-</p>
+<table>
+<tr>
+  <td align="left" width="230">
+    <img src="plank_db_logo.png" alt="PlankDB Logo" width="220"/>
+  </td>
+  <td align="left" valign="middle">
+    <a href="https://github.com/qosf/awesome-quantum-software#quantum-tools">
+      <img src="https://awesome.re/badge.svg" alt="Awesome"/>
+    </a>
+  </td>
+</tr>
+</table>
 
 # PlankDB
 **Quantum-Accelerated Key-Value Store**
