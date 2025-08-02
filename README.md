@@ -1,17 +1,11 @@
-<table>
-<tr>
-  <td align="left" width="230">
-    <img src="plank_db_logo.png" alt="PlankDB Logo" width="220"/>
-  </td>
-  <td align="left" valign="middle">
-    <a href="https://github.com/qosf/awesome-quantum-software#quantum-tools">
-      <img src="https://awesome.re/badge.svg" alt="Awesome"/>
-    </a>
-  </td>
-</tr>
-</table>
-
 # PlankDB
+[![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
+
+**Quantum-assisted in-memory key-value store** with Grover-powered range queries and dual-mode search (local & IBM Q backend).  
+☁️ Built with Spring Boot, Python bridge, and Qiskit integration.  
+🏆 *Featured in [Awesome Quantum Software](https://github.com/qosf/awesome-quantum-software#quantum-tools) by QOSF.*
+
+
 **Quantum-Accelerated Key-Value Store**
 
 ## Table of Contents
