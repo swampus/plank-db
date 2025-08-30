@@ -43,7 +43,7 @@ ENV PYTHONPATH=/app/python \
 
 EXPOSE 8085
 
-# Optional: enable if you have Spring Actuator
+# Optional healthcheck if Spring Actuator is enabled:
 # HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD \
 #   curl -fsS http://localhost:8085/actuator/health || exit 1
 

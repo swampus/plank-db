@@ -17,6 +17,7 @@ public class QuantumConfig {
     private String localScriptPath;
     private String ibmRangeScriptPath;
     private String localRangeScriptPath;
+    private String localExplainScriptPath;
     private ExecutionMode quantumExecutionMode;
 
     @PostConstruct
@@ -58,7 +59,15 @@ public class QuantumConfig {
             case IBM_REAL_PC -> throw new UnsupportedOperationException("IBM_REAL_PC mode requires dynamic script handling");
         };
     }
-    
+
+    public String resolveExplainScriptPath() {
+        // LOCAL only
+        if (quantumExecutionMode != ExecutionMode.LOCAL) return null;
+        if (localExplainScriptPath != null && !localExplainScriptPath.isBlank()) return localExplainScriptPath;
+        if (localScriptPath != null && !localScriptPath.isBlank()) return localScriptPath;
+        return "/app/python/explain.py";
+    }
+
     @Override
     public String toString() {
         return "QuantumConfig{" +
@@ -68,6 +77,7 @@ public class QuantumConfig {
                 ", localScriptPath='" + localScriptPath + '\'' +
                 ", ibmRangeScriptPath='" + ibmRangeScriptPath + '\'' +
                 ", localRangeScriptPath='" + localRangeScriptPath + '\'' +
+                ", localExplainScriptPath='" + localExplainScriptPath + '\'' +
                 ", quantumExecutionMode=" + quantumExecutionMode +
                 '}';
     }
