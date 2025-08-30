@@ -1,52 +1,50 @@
 # === Stage 1: Build the JAR using Maven ===
 FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /build
-
-COPY pom.xml .
-RUN mvn -q -e -DskipTests dependency:go-offline
-
 COPY . .
-RUN mvn clean package -DskipTests
+RUN mvn -q -DskipTests clean package
 
-# === Stage 2: Runtime with Java + Python ===
+# === Stage 2: Runtime with Java + Python (venv) ===
 FROM openjdk:17-slim
-WORKDIR /app
 
-# System deps for Qiskit/Aer
+# System deps for Qiskit/Aer & tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 python3-pip python3-venv \
-    build-essential gcc g++ gfortran \
-    libopenblas-dev liblapack-dev libomp-dev libgfortran5 \
-    ca-certificates apt-transport-https \
-  && rm -rf /var/lib/apt/lists/*
+    build-essential gcc g++ gfortran libgfortran5 \
+    libopenblas-dev liblapack-dev libomp-dev \
+    ca-certificates curl \
+ && rm -rf /var/lib/apt/lists/*
 
 # Python venv
 RUN python3 -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-ENV PYTHONUNBUFFERED=1
+ENV PATH="/opt/venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1
 
-# Python deps (pinned)
+# Python packages (pinned for stability)
 RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir \
+    "numpy==1.26.4" \
     "qiskit~=1.0" \
     "qiskit-aer" \
     "qiskit-algorithms" \
     "qiskit-ibm-runtime>=0.24.0" \
     "tweedledum" \
-    "python-dotenv" \
-    "numpy==1.26.4"
+    "python-dotenv"
 
-# Copy artifacts
+# App files
+WORKDIR /app
 COPY --from=builder /build/web/target/plank-db.jar ./plank-db.jar
 COPY python/ ./python/
 
-ENV PYTHONPATH=/app/python
-ENV SPRING_PROFILES_ACTIVE=default
+# Make python scripts importable & point runner to venv python
+ENV PYTHONPATH=/app/python \
+    QUANTUM_PYTHON_EXEC=/opt/venv/bin/python \
+    SPRING_PROFILES_ACTIVE=default
 
 EXPOSE 8085
 
-# HEALTHCHECK
-HEALTHCHECK --interval=30s --timeout=3s --retries=5 CMD \
-  curl -fsS http://localhost:8085/actuator/health || exit 1
+# Optional: enable if you have Spring Actuator
+# HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD \
+#   curl -fsS http://localhost:8085/actuator/health || exit 1
 
 ENTRYPOINT ["java", "-jar", "plank-db.jar"]
