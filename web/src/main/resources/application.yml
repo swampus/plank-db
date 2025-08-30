@@ -10,6 +10,7 @@ quantum:
   quantum-ibm-token: ${QUANTUM_IBM_TOKEN}
   quantum-execution-mode: ${QUANTUM_EXECUTION_MODE}
 
+  local-explain-script-path: ${QUANTUM_LOCAL_EXPLAIN_SCRIPT_PATH:/app/python/explain.py}
 
 springdoc:
   api-docs:
