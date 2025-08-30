@@ -1,4 +1,4 @@
-package io.github.swampus.quntum;
+package io.github.swampus.quantum;
 
 
 public enum QueryMode {

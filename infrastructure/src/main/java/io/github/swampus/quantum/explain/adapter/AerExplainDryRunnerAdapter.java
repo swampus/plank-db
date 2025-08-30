@@ -1,4 +1,4 @@
-package io.github.swampus.qunatum.explain.adapter;
+package io.github.swampus.quantum.explain.adapter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,8 +6,8 @@ import io.github.swampus.config.ExecutionMode;
 import io.github.swampus.config.QuantumConfig;
 import io.github.swampus.port.out.QuantumDryRunnerPort;
 import io.github.swampus.ports.QuantumScriptExecutor;
-import io.github.swampus.quntum.DryRunResult;
-import io.github.swampus.quntum.QuantumPlan;
+import io.github.swampus.quantum.DryRunResult;
+import io.github.swampus.quantum.QuantumPlan;
 
 import java.util.*;
 import java.util.stream.Collectors;

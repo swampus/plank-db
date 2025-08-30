@@ -1,7 +1,7 @@
 package io.github.swampus.port.out;
 
-import io.github.swampus.quntum.DryRunResult;
-import io.github.swampus.quntum.QuantumPlan;
+import io.github.swampus.quantum.DryRunResult;
+import io.github.swampus.quantum.QuantumPlan;
 
 /**
  * Secondary (driven) port for performing a local quantum dry-run

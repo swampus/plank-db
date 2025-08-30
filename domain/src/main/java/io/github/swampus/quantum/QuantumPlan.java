@@ -1,4 +1,4 @@
-package io.github.swampus.quntum;
+package io.github.swampus.quantum;
 
 import java.util.List;
 import java.util.Map;

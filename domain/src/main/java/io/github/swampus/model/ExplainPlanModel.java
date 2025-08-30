@@ -1,7 +1,7 @@
 package io.github.swampus.model;
 
-import io.github.swampus.quntum.DryRunResult;
-import io.github.swampus.quntum.QuantumPlan;
+import io.github.swampus.quantum.DryRunResult;
+import io.github.swampus.quantum.QuantumPlan;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

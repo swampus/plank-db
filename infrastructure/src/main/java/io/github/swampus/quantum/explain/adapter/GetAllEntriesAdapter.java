@@ -1,4 +1,4 @@
-package io.github.swampus.qunatum.explain.adapter;
+package io.github.swampus.quantum.explain.adapter;
 
 import io.github.swampus.port.out.CollectionReaderPort;
 import io.github.swampus.usecase.GetAllEntriesUseCase;

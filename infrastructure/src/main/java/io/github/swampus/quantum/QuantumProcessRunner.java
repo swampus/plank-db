@@ -1,4 +1,4 @@
-package io.github.swampus.qunatum;
+package io.github.swampus.quantum;
 
 import io.github.swampus.exception.AppException;
 import io.github.swampus.exception.CollectionNotFoundException;

@@ -1,9 +1,9 @@
-package io.github.swampus.qunatum.search.ibm;
+package io.github.swampus.quantum.search.ibm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;
-import io.github.swampus.qunatum.QuantumProcessRunner;
-import io.github.swampus.qunatum.search.AbstractGroverSearcher;
+import io.github.swampus.quantum.QuantumProcessRunner;
+import io.github.swampus.quantum.search.AbstractGroverSearcher;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package io.github.swampus.qunatum.search;
+package io.github.swampus.quantum.search;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,7 +7,7 @@ import io.github.swampus.config.QuantumConfig;
 import io.github.swampus.exception.QuantumInvalidInputException;
 import io.github.swampus.model.QuantumResultModel;
 import io.github.swampus.ports.QuantumRangeSearcher;
-import io.github.swampus.qunatum.QuantumProcessRunner;
+import io.github.swampus.quantum.QuantumProcessRunner;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

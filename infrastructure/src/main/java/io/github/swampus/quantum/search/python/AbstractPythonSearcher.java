@@ -1,4 +1,4 @@
-package io.github.swampus.qunatum.search.python;
+package io.github.swampus.quantum.search.python;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.swampus.config.QuantumConfig;

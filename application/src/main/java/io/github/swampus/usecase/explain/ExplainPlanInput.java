@@ -1,6 +1,6 @@
 package io.github.swampus.usecase.explain;
 
-import io.github.swampus.quntum.QueryMode;
+import io.github.swampus.quantum.QueryMode;
 import lombok.Builder;
 import lombok.Data;
 
