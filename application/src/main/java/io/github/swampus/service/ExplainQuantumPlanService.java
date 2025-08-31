@@ -13,6 +13,7 @@ import io.github.swampus.quantum.BackendInfo;
 import io.github.swampus.quantum.DryRunResult;
 import io.github.swampus.quantum.QueryMode;
 import io.github.swampus.quantum.QuantumPlan;
+import io.github.swampus.service.utils.PlanIdUtil;
 import io.github.swampus.usecase.explain.ExplainPlanInput;
 import io.github.swampus.usecase.explain.ExplainQuantumPlanUseCase;
 import io.github.swampus.usecase.explain.Strategy;
@@ -92,17 +93,19 @@ public final class ExplainQuantumPlanService implements ExplainQuantumPlanUseCas
         BackendInfo backend = buildBackendInfo(input.getBackend(), input.getShots(), input.getSeed());
 
         // 7) Compute stable planId from the semantic identity of the plan (no Jackson)
-        String planId = computePlanId(
-                mode, targetLabel, encoding, markedStates, n, numQubits, iterations, iterations, oracleExpr
+        String planId = PlanIdUtil.computeId(
+                input.getMode(), target.label(), encoding, target.markedStates(),
+                target.markedStates().size(), n, numQubits,
+                iterations, iterations, oracleExpr,
+                estimatedOracleDepth, gateCounts, backend
         );
 
-        // 8) Assemble the plan (expose immutable views)
         QuantumPlan plan = new QuantumPlan(
-                mode,
-                targetLabel,
+                input.getMode(),
+                target.label(),
                 Collections.unmodifiableMap(encoding),
-                Collections.unmodifiableList(markedStates),
-                markedStates.size(),
+                Collections.unmodifiableList(target.markedStates()),
+                target.markedStates().size(),
                 n,
                 numQubits,
                 iterations,
@@ -198,8 +201,11 @@ public final class ExplainQuantumPlanService implements ExplainQuantumPlanUseCas
     }
 
     private String buildOracleExpression(List<String> markedStates) {
-        if (markedStates.size() == 1) return "(x" + markedStates.get(0) + ")";
-        return markedStates.stream().map(s -> "x" + s).collect(Collectors.joining(" | "));
+        // Always wrap in parentheses for consistency with docs/Swagger
+        String inner = markedStates.stream()
+                .map(s -> "x" + s)
+                .collect(Collectors.joining(" | "));
+        return "(" + inner + ")";
     }
 
     private BackendInfo buildBackendInfo(String backendRaw, Integer shots, Integer seed) {
