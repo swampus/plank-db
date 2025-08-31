@@ -7,44 +7,52 @@ RUN mvn -q -DskipTests clean package
 # === Stage 2: Runtime with Java + Python (venv) ===
 FROM openjdk:17-slim
 
-# System deps for Qiskit/Aer & tools
+# System deps required by Qiskit/Aer (runtime libs included)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 python3-pip python3-venv \
     build-essential gcc g++ gfortran libgfortran5 \
-    libopenblas-dev liblapack-dev libomp-dev \
-    ca-certificates curl \
- && rm -rf /var/lib/apt/lists/*
+    libopenblas-dev liblapack-dev \
+    libstdc++6 libgomp1 \
+    ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
 
-# Python venv
+# Create dedicated virtualenv
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONUNBUFFERED=1
 
-# Python packages (pinned for stability)
-RUN pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir \
-    "numpy==1.26.4" \
-    "qiskit~=1.0" \
-    "qiskit-aer" \
-    "qiskit-algorithms" \
-    "qiskit-ibm-runtime>=0.24.0" \
-    "tweedledum" \
-    "python-dotenv"
+# Install Python packages into *this* venv only
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+      "numpy==1.26.4" \
+      "qiskit~=1.0" \
+      "qiskit-aer" \
+      "qiskit-algorithms" \
+      "qiskit-ibm-runtime>=0.24.0" \
+      "tweedledum" \
+      "python-dotenv" && \
+    # Build-time sanity check to fail the image if imports are broken
+    python - <<'PY'
+import sys
+print("EXEC", sys.executable)
+import qiskit, qiskit_aer
+print("QISKIT", getattr(qiskit, "__version__", "n/a"))
+print("AER-OK")
+PY
 
 # App files
 WORKDIR /app
 COPY --from=builder /build/web/target/plank-db.jar ./plank-db.jar
 COPY python/ ./python/
 
-# Make python scripts importable & point runner to venv python
+# Point app to the exact interpreter; expose scripts via PYTHONPATH
 ENV PYTHONPATH=/app/python \
     QUANTUM_PYTHON_EXEC=/opt/venv/bin/python \
     SPRING_PROFILES_ACTIVE=default
 
-EXPOSE 8085
+# (Optional) more verbose logs for the adapter package
+ENV LOGGING_LEVEL_io_github_swampus_quantum_explain_adapter=TRACE
 
-# Optional healthcheck if Spring Actuator is enabled:
-# HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD \
-#   curl -fsS http://localhost:8085/actuator/health || exit 1
+EXPOSE 8085
 
 ENTRYPOINT ["java", "-jar", "plank-db.jar"]

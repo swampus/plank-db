@@ -3,76 +3,171 @@ package io.github.swampus.config;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 @ConfigurationProperties(prefix = "quantum")
 @Getter
 @Setter
+@Slf4j
 public class QuantumConfig {
 
-    private String pythonExecutable;
-    private String quantumIbmToken;
-    private String ibmScriptPath;
-    private String localScriptPath;
-    private String ibmRangeScriptPath;
-    private String localRangeScriptPath;
-    private String localExplainScriptPath;
-    private ExecutionMode quantumExecutionMode;
+    // --- Core settings (with safe defaults) ---
 
+    /** Absolute path to Python interpreter used to run quantum scripts. */
+    private String pythonExecutable = "/opt/venv/bin/python";
+
+    /** Execution mode: LOCAL (Aer) or IBM (remote). */
+    private ExecutionMode quantumExecutionMode = ExecutionMode.LOCAL;
+
+    /** IBM auth token (required only for IBM modes). */
+    private String quantumIbmToken;
+
+    // --- Script paths (flat keys to keep current YAML compatibility) ---
+
+    /** LOCAL: key search script (Grover over single label). */
+    private String localScriptPath = "/app/python/grover.py";
+
+    /** LOCAL: range search script (Grover over a range). */
+    private String localRangeScriptPath = "/app/python/grover_range.py";
+
+    /** LOCAL: explain/dry-run script (AerExplain) */
+    private String localExplainScriptPath = "/app/python/explain.py";
+
+    /** IBM: key search script. */
+    private String ibmScriptPath = "/app/python/grover_ibm.py";
+
+    /** IBM: range search script. */
+    private String ibmRangeScriptPath = "/app/python/grover_range_ibm.py";
+
+    // --- Lifecycle ---
+
+    /**
+     * Validate configuration at startup. Fail-fast on critical issues
+     * for the active backend only; warn for non-critical environment issues.
+     */
     @PostConstruct
     public void validate() {
+        // Basic required fields
+        List<String> errors = new ArrayList<>();
         if (isNullOrBlank(pythonExecutable)) {
-            throw new IllegalStateException("QUANTUM_PYTHON_EXEC is not set.");
+            errors.add("pythonExecutable is not set (env QUANTUM_PYTHON_EXEC).");
         }
         if (quantumExecutionMode == null) {
-            throw new IllegalStateException("QUANTUM_EXECUTION_MODE is not set.");
+            errors.add("quantumExecutionMode is not set (env QUANTUM_EXECUTION_MODE).");
         }
-        switch (quantumExecutionMode) {
-            case LOCAL -> {
-                check("QUANTUM_LOCAL_SCRIPT_PATH", localScriptPath);
-                check("QUANTUM_LOCAL_RANGE_SCRIPT_PATH", localRangeScriptPath);
+
+        // Mode-specific requirements
+        if (quantumExecutionMode == ExecutionMode.LOCAL) {
+            require("localScriptPath (env QUANTUM_LOCAL_SCRIPT_PATH)", localScriptPath, errors);
+            require("localRangeScriptPath (env QUANTUM_LOCAL_RANGE_SCRIPT_PATH)", localRangeScriptPath, errors);
+            // Explain is optional but recommended; warn if missing
+            if (isNullOrBlank(localExplainScriptPath)) {
+                log.warn("[QuantumConfig] localExplainScriptPath is empty; falling back to localScriptPath for explain().");
             }
-            case IBM -> {
-                check("QUANTUM_IBM_SCRIPT_PATH", ibmScriptPath);
-                check("QUANTUM_IBM_RANGE_SCRIPT_PATH", ibmRangeScriptPath);
-                check("QUANTUM_IBM_TOKEN", quantumIbmToken);
+        } else if (quantumExecutionMode == ExecutionMode.IBM) {
+            require("ibmScriptPath (env QUANTUM_IBM_SCRIPT_PATH)", ibmScriptPath, errors);
+            require("ibmRangeScriptPath (env QUANTUM_IBM_RANGE_SCRIPT_PATH)", ibmRangeScriptPath, errors);
+            require("quantumIbmToken (env QUANTUM_IBM_TOKEN)", quantumIbmToken, errors);
+        } else if (quantumExecutionMode == ExecutionMode.IBM_REAL_PC) {
+            errors.add("IBM_REAL_PC mode is not supported yet (requires dynamic script handling).");
+        }
+
+        if (!errors.isEmpty()) {
+            // Build a human-friendly message and fail fast
+            String msg = "[QuantumConfig] Misconfiguration:\n - " + String.join("\n - ", errors);
+            throw new IllegalStateException(msg);
+        }
+
+        // Soft environment checks (do not fail the app)
+        softCheckExists("pythonExecutable", pythonExecutable);
+        if (quantumExecutionMode == ExecutionMode.LOCAL) {
+            softCheckExists("localScriptPath", localScriptPath);
+            softCheckExists("localRangeScriptPath", localRangeScriptPath);
+            if (!isNullOrBlank(localExplainScriptPath)) {
+                softCheckExists("localExplainScriptPath", localExplainScriptPath);
             }
+        } else if (quantumExecutionMode == ExecutionMode.IBM) {
+            softCheckExists("ibmScriptPath", ibmScriptPath);
+            softCheckExists("ibmRangeScriptPath", ibmRangeScriptPath);
         }
+
+        // Summary (mask IBM token if present)
+        log.info("[QuantumConfig] mode={}, python='{}', keyScript='{}', rangeScript='{}', explainScript='{}', ibmToken={}",
+                quantumExecutionMode,
+                pythonExecutable,
+                resolveKeyScriptPath(),
+                resolveRangeScriptPath(),
+                resolveExplainScriptPath(),
+                mask(quantumIbmToken));
     }
 
-    private void check(String name, String value) {
-        if (isNullOrBlank(value)) {
-            throw new IllegalStateException(name + " is not set.");
-        }
+    // --- Resolvers used by adapters/use cases ---
+
+    /** Resolve script path for KEY search based on current execution mode. */
+    public String resolveKeyScriptPath() {
+        return (quantumExecutionMode == ExecutionMode.LOCAL) ? localScriptPath : ibmScriptPath;
     }
 
-    private boolean isNullOrBlank(String value) {
-        return value == null || value.isBlank();
+    /** Resolve script path for RANGE search based on current execution mode. */
+    public String resolveRangeScriptPath() {
+        return (quantumExecutionMode == ExecutionMode.LOCAL) ? localRangeScriptPath : ibmRangeScriptPath;
     }
 
-
-    public String resolveScriptPath(boolean isRange) {
-        return switch (quantumExecutionMode) {
-            case LOCAL -> isRange ? localRangeScriptPath : localScriptPath;
-            case IBM -> isRange ? ibmRangeScriptPath : ibmScriptPath;
-            case IBM_REAL_PC -> throw new UnsupportedOperationException("IBM_REAL_PC mode requires dynamic script handling");
-        };
-    }
-
+    /**
+     * Resolve script path for EXPLAIN (dry-run) on LOCAL backend.
+     * Falls back to localScriptPath if explicit explain path is missing.
+     * Returns null for non-LOCAL modes (explain not supported).
+     */
     public String resolveExplainScriptPath() {
-        // LOCAL only
         if (quantumExecutionMode != ExecutionMode.LOCAL) return null;
-        if (localExplainScriptPath != null && !localExplainScriptPath.isBlank()) return localExplainScriptPath;
-        if (localScriptPath != null && !localScriptPath.isBlank()) return localScriptPath;
-        return "/app/python/explain.py";
+        if (!isNullOrBlank(localExplainScriptPath)) return localExplainScriptPath;
+        return localScriptPath; // graceful fallback
+    }
+
+    // --- Helpers ---
+
+    private static boolean isNullOrBlank(String v) {
+        return v == null || v.isBlank();
+    }
+
+    private static void require(String name, String value, List<String> errors) {
+        if (isNullOrBlank(value)) {
+            errors.add(name + " is not set.");
+        }
+    }
+
+    /** Soft file existence check with WARN level only. */
+    private static void softCheckExists(String label, String path) {
+        try {
+            if (isNullOrBlank(path)) return;
+            Path p = Path.of(path);
+            if (!Files.exists(p)) {
+                // Do not fail: scripts may be copied by a volume or later in CI
+                log.warn("[QuantumConfig] {}='{}' does not exist at startup.", label, path);
+            }
+        } catch (Exception e) {
+            log.warn("[QuantumConfig] {} path check failed for '{}': {}", label, path, e.toString());
+        }
+    }
+
+    /** Mask secrets in logs; keep last 4 chars. */
+    private static String mask(String token) {
+        if (isNullOrBlank(token)) return "null";
+        int n = token.length();
+        return (n <= 8) ? "********" : "****" + token.substring(n - 4);
     }
 
     @Override
     public String toString() {
         return "QuantumConfig{" +
                 "pythonExecutable='" + pythonExecutable + '\'' +
-                ", quantumIbmToken='" + quantumIbmToken + '\'' +
+                ", quantumIbmToken=" + mask(quantumIbmToken) +
                 ", ibmScriptPath='" + ibmScriptPath + '\'' +
                 ", localScriptPath='" + localScriptPath + '\'' +
                 ", ibmRangeScriptPath='" + ibmRangeScriptPath + '\'' +

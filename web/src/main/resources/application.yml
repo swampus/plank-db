@@ -2,15 +2,14 @@ server:
   port: 8085
 
 quantum:
-  python-executable: ${QUANTUM_PYTHON_EXEC}
-  local-script-path: ${QUANTUM_LOCAL_SCRIPT_PATH}
-  local-range-script: ${QUANTUM_LOCAL_RANGE_SCRIPT_PATH}
-  ibm-script-path: ${QUANTUM_IBM_SCRIPT_PATH}
-  ibm-range-script-path: ${QUANTUM_IBM_RANGE_SCRIPT_PATH}
-  quantum-ibm-token: ${QUANTUM_IBM_TOKEN}
-  quantum-execution-mode: ${QUANTUM_EXECUTION_MODE}
-
+  python-executable: ${QUANTUM_PYTHON_EXEC:/opt/venv/bin/python}
+  local-script-path: ${QUANTUM_LOCAL_SCRIPT_PATH:/app/python/grover.py}
+  local-range-script-path: ${QUANTUM_LOCAL_RANGE_SCRIPT_PATH:/app/python/grover_range.py}
   local-explain-script-path: ${QUANTUM_LOCAL_EXPLAIN_SCRIPT_PATH:/app/python/explain.py}
+  ibm-script-path: ${QUANTUM_IBM_SCRIPT_PATH:/app/python/grover_ibm.py}
+  ibm-range-script-path: ${QUANTUM_IBM_RANGE_SCRIPT_PATH:/app/python/grover_range_ibm.py}
+  quantum-execution-mode: ${QUANTUM_EXECUTION_MODE:LOCAL}
+
 
 springdoc:
   api-docs:
@@ -20,3 +19,12 @@ springdoc:
     display-request-duration: true
     tags-sorter: alpha
     operations-sorter: alpha
+
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+logging:
+  level:
+    root: INFO
+    io.github.swampus.quantum.explain.adapter: TRACE
