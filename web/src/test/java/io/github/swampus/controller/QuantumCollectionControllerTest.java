@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(QuantumCollectionController.class)
-@Import({UseCaseConfig.class})
 @TestPropertySource(properties = {
         "quantum.quantum-execution-mode=LOCAL",
         "quantum.python-executable=/usr/bin/python3",

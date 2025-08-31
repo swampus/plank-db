@@ -2,104 +2,127 @@ package io.github.swampus.quantum.explain.adapter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.swampus.config.ExecutionMode;
-import io.github.swampus.config.QuantumConfig;
 import io.github.swampus.port.out.QuantumDryRunnerPort;
-import io.github.swampus.ports.QuantumScriptExecutor;
 import io.github.swampus.quantum.DryRunResult;
 import io.github.swampus.quantum.QuantumPlan;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Infra adapter that runs the local Aer "explain" Python script and parses JSON.
- * Delegates process execution to the existing QuantumScriptExecutor (QuantumProcessRunner).
- *
- * Behavior:
- * - If executionMode != LOCAL, returns null (Explain dry-run is local-only).
- * - If plan.backend().name() doesn't start with "local/", returns null.
- * - Otherwise, runs python/explain.py and parses JSON to DryRunResult.
- */
+@Component
+@RequiredArgsConstructor
 public class AerExplainDryRunnerAdapter implements QuantumDryRunnerPort {
 
-    private final QuantumScriptExecutor processRunner; // your QuantumProcessRunner
-    private final QuantumConfig config;                // provides script paths + mode
-    private final ObjectMapper mapper;                 // inject a shared mapper
+    // Use Jackson in infrastructure (OK by clean architecture)
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public AerExplainDryRunnerAdapter(QuantumScriptExecutor processRunner,
-                                      QuantumConfig config,
-                                      ObjectMapper mapper) {
-        this.processRunner = Objects.requireNonNull(processRunner, "processRunner");
-        this.config = Objects.requireNonNull(config, "config");
-        this.mapper = Objects.requireNonNull(mapper, "mapper");
-    }
+    // Allow both Spring property and env fallback
+    @Value("${quantum.python-executable:${QUANTUM_PYTHON_EXEC:python3}}")
+    private String pythonExec;
+
+    // Local explain script path (the one that accepts --states/--iterations/etc)
+    @Value("${quantum.local-script-path:${QUANTUM_LOCAL_SCRIPT_PATH:/app/python/explain.py}}")
+    private String scriptPath;
 
     @Override
-    public DryRunResult dryRun(QuantumPlan plan) {
-        // 1) Guard: only run locally; IBM returns plan-only (null dryRun)
-        if (config.getQuantumExecutionMode() != ExecutionMode.LOCAL) return null;
-        if (plan == null || plan.backend() == null) return null;
-        String backendName = plan.backend().name();
-        if (backendName == null || !backendName.startsWith("local/")) return null;
+    public DryRunResult dryRun(QuantumPlan plan, DryRunOptions options) {
+        try {
+            // Build CLI args
+            List<String> cmd = new ArrayList<>();
+            cmd.add(pythonExec);
+            cmd.add(scriptPath);
+            cmd.add("--qubits");     cmd.add(String.valueOf(plan.numQubits()));
+            cmd.add("--states");     cmd.add(String.join(",", plan.markedStates()));
+            cmd.add("--iterations"); cmd.add(String.valueOf(plan.optimalIterations()));
+            int shots = plan.backend().shots() == null ? 2048 : plan.backend().shots();
+            cmd.add("--shots");      cmd.add(String.valueOf(shots));
+            if (plan.backend().seed() != null) {
+                cmd.add("--seed");   cmd.add(String.valueOf(plan.backend().seed()));
+            }
+            if (options != null) {
+                if (options.render()) { cmd.add("--render"); }
+                if (options.noise() > 0.0) {
+                    cmd.add("--noise"); cmd.add(String.valueOf(options.noise()));
+                }
+                if (options.topK() != null) {
+                    cmd.add("--topk"); cmd.add(String.valueOf(options.topK()));
+                }
+            }
 
-        // 2) Resolve script path (prefer dedicated explain path; fallback to localScriptPath; then default)
-        String script = resolveExplainScriptPath();
+            // Run process
+            Process p = new ProcessBuilder(cmd).redirectErrorStream(true).start();
+            String out;
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8))) {
+                out = br.lines().collect(Collectors.joining());
+            }
+            int code = p.waitFor();
+            if (code != 0) {
+                throw new RuntimeException("Python exited with code " + code + ", output: " + out);
+            }
 
-        // 3) Build CLI args for explain.py
-        List<String> args = new ArrayList<>(Arrays.asList(
-                "--qubits", String.valueOf(plan.numQubits()),
-                "--states", String.join(",", plan.markedStates()),
-                "--iterations", String.valueOf(plan.optimalIterations()),
-                "--shots", String.valueOf(
-                        plan.backend().shots() == null ? 2048 : plan.backend().shots()
-                )
-        ));
-        if (plan.backend().seed() != null) {
-            args.add("--seed");
-            args.add(String.valueOf(plan.backend().seed()));
+            // Parse JSON (tolerate absent optional fields)
+            Map<String, Object> json = mapper.readValue(out, new TypeReference<>() {});
+            Map<String, Double> probs        = castProbMap(json.get("probabilities"));
+            String top                       = asString(json.get("top_measurement"));
+            Double conf                      = asDouble(json.get("confidence"));
+            Long execMs                      = asLong(json.get("execution_time_ms"));
+            Map<String, Double> probsNoisy   = castProbMap(json.get("probabilities_noisy"));
+            List<DryRunResult.TopHit> topK   = parseTopK(json.get("topK"));
+            String circuitB64                = asString(json.get("circuit_png_b64"));
+            String histB64                   = asString(json.get("histogram_png_b64"));
+
+            // New DryRunResult signature (8 args). Pass nulls if not present.
+            return new DryRunResult(top, probs, conf, execMs, probsNoisy, topK, circuitB64, histB64);
+        } catch (Exception e) {
+            throw new RuntimeException("Dry-run failed: " + e.getMessage(), e);
         }
-
-        // 4) Run via the shared process runner (handles env + exit codes)
-        String stdout = processRunner.run(script, args);
-
-        // 5) Parse JSON into DryRunResult
-        return parseDryRun(stdout);
     }
 
-    private String resolveExplainScriptPath() {
-        // Optional dedicated key (add if you created it in QuantumConfig):
-        // String p = config.getLocalExplainScriptPath();
-        // If you haven't added a dedicated field, use localScriptPath as a fallback:
-        String p = config.getLocalScriptPath();
-        if (p == null || p.isBlank()) {
-            // final fallback matches our Docker image layout
-            return "/app/python/explain.py";
+    // optional legacy override if interface also provides default short method
+    @Override
+    public DryRunResult dryRun(QuantumPlan plan) {
+        return dryRun(plan, DryRunOptions.defaults());
+    }
+
+    // ---------- helpers ----------
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Double> castProbMap(Object o) {
+        if (o == null) return null;
+        Map<String, Object> raw = (Map<String, Object>) o;
+        Map<String, Double> res = new LinkedHashMap<>(raw.size());
+        for (var e : raw.entrySet()) {
+            Object v = e.getValue();
+            if (v instanceof Number n) {
+                res.put(e.getKey(), n.doubleValue());
+            } else if (v != null) {
+                res.put(e.getKey(), Double.parseDouble(String.valueOf(v)));
+            }
         }
-        return p;
+        return res;
     }
 
     @SuppressWarnings("unchecked")
-    private DryRunResult parseDryRun(String stdoutJson) {
-        try {
-            Map<String, Object> json = mapper.readValue(stdoutJson, new TypeReference<>() {});
-            Map<String, Double> probs = Optional.ofNullable((Map<String, Object>) json.get("probabilities"))
-                    .orElseGet(Collections::emptyMap)
-                    .entrySet().stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            e -> ((Number) e.getValue()).doubleValue()
-                    ));
-
-            String top = (String) json.get("top_measurement");
-            Double conf = (json.get("confidence") instanceof Number n) ? n.doubleValue() : null;
-            Long execMs = (json.get("execution_time_ms") instanceof Number n) ? n.longValue() : null;
-
-            return new DryRunResult(top, probs, conf, execMs);
-        } catch (Exception e) {
-            // Prefer returning null to avoid breaking the Explain flow on parse errors.
-            return null;
+    private List<DryRunResult.TopHit> parseTopK(Object o) {
+        if (o == null) return null;
+        List<Map<String, Object>> arr = (List<Map<String, Object>>) o;
+        List<DryRunResult.TopHit> list = new ArrayList<>(arr.size());
+        for (Map<String, Object> m : arr) {
+            String state = asString(m.get("state"));
+            Double p     = asDouble(m.get("p"));
+            list.add(new DryRunResult.TopHit(state, p));
         }
+        return list;
     }
-}
 
+    private String asString(Object o) { return (o == null) ? null : String.valueOf(o); }
+    private Double asDouble(Object o) { return (o == null) ? null : ((Number) o).doubleValue(); }
+    private Long asLong(Object o)     { return (o == null) ? null : ((Number) o).longValue(); }
+}

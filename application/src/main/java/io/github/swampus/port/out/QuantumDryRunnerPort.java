@@ -15,5 +15,12 @@ import io.github.swampus.quantum.QuantumPlan;
  * depending on the desired UX (we usually return null to not block Explain).
  */
 public interface QuantumDryRunnerPort {
-    DryRunResult dryRun(QuantumPlan plan);
+    default DryRunResult dryRun(QuantumPlan plan) {
+        return dryRun(plan, DryRunOptions.defaults());
+    }
+    DryRunResult dryRun(QuantumPlan plan, DryRunOptions options);
+
+    record DryRunOptions(boolean render, double noise, Integer topK) {
+        public static DryRunOptions defaults() { return new DryRunOptions(false, 0.0, null); }
+    }
 }

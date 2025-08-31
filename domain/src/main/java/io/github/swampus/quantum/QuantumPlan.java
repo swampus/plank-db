@@ -17,6 +17,7 @@ public record QuantumPlan(
         int estimatedOracleDepth,
         Map<String, Integer> estimatedGateCounts,
         BackendInfo backend,
-        List<String> notes
+        List<String> note,
+        String planId
 ) {}
 
