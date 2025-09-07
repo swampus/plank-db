@@ -17,7 +17,11 @@ public class JacksonDryRunConfig {
     Jackson2ObjectMapperBuilderCustomizer dryRunMixins() {
         return builder -> builder
                 .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE) // keep snake_case everywhere
-                .mixIn(DryRunResult.class, DryRunResultMixin.class);
+                .mixIn(DryRunResult.class, DryRunResultMixin.class)
+                .modules(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule()) // support OffsetDateTime
+                .featuresToDisable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
+
+
 }
 

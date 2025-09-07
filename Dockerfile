@@ -25,19 +25,17 @@ ENV PATH="/opt/venv/bin:$PATH" \
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
       "numpy==1.26.4" \
-      "qiskit~=1.0" \
-      "qiskit-aer" \
-      "qiskit-algorithms" \
-      "qiskit-ibm-runtime>=0.24.0" \
+      "qiskit==1.1.1" \
+      "qiskit-aer==0.14.2" \
+      "qiskit-algorithms==0.2.2" \
+      "qiskit-ibm-runtime==0.24.0" \
       "tweedledum" \
       "python-dotenv" && \
-    # Build-time sanity check to fail the image if imports are broken
     python - <<'PY'
-import sys
-print("EXEC", sys.executable)
-import qiskit, qiskit_aer
-print("QISKIT", getattr(qiskit, "__version__", "n/a"))
-print("AER-OK")
+import qiskit, qiskit_aer, qiskit_algorithms
+print("QISKIT", qiskit.__version__)
+print("AER", qiskit_aer.__version__)
+print("ALG", qiskit_algorithms.__version__)
 PY
 
 # App files

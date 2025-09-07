@@ -180,7 +180,11 @@ def main():
     if args.backend != "local":
         print("Only 'local' backend is supported.", file=sys.stderr)
         sys.exit(EXIT_INVALID_INPUT)
-    sampler = Sampler(options={"shots": args.shots, "seed_simulator": args.seed})
+
+    sampler = Sampler()
+    sampler.options.update_options(shots=args.shots)
+    if args.seed is not None:
+        sampler.options.update_options(seed_simulator=args.seed)
 
     # Grover algorithm
     np.random.seed(args.seed)

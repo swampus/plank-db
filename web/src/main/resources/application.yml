@@ -20,11 +20,13 @@ springdoc:
     tags-sorter: alpha
     operations-sorter: alpha
 
-spring:
-  jackson:
-    property-naming-strategy: SNAKE_CASE
-
 logging:
   level:
     root: INFO
     io.github.swampus.quantum.explain.adapter: TRACE
+
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false

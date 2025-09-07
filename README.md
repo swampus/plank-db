@@ -61,6 +61,7 @@ PlankDB is intended to be launched and tested via **Docker**. Although local bui
 git clone https://github.com/swampus/plank-db.git
 cd plank-db
 
+cp env.example .env
 docker compose build
 docker compose up
 ```
@@ -70,6 +71,7 @@ This will launch the service and expose the API on port `8080`.
 > 🔁 Alternatively, you can also use classic Docker CLI:
 >
 ```bash
+cp env.example .env
 docker build -t plankdb .
 docker run -p 8080:8080 plankdb
 ```
