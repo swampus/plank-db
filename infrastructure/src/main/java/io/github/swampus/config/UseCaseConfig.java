@@ -6,6 +6,7 @@ import io.github.swampus.port.out.QuantumDryRunnerPort;
 import io.github.swampus.ports.QuantumCollectionRepository;
 import io.github.swampus.ports.QuantumRangeSearcher;
 import io.github.swampus.ports.QuantumSearcher;
+import io.github.swampus.quantum.PythonQuantumDryRunner;
 import io.github.swampus.quantum.QuantumProcessRunner;
 import io.github.swampus.quantum.search.ibm.GroverIbmRangeSearcher;
 import io.github.swampus.quantum.search.ibm.GroverIbmSearcher;
@@ -16,6 +17,7 @@ import io.github.swampus.usecase.*;
 import io.github.swampus.usecase.explain.ExplainQuantumPlanUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class UseCaseConfig {
@@ -40,10 +42,6 @@ public class UseCaseConfig {
         return new CreateCollectionUseCase(repository);
     }
 
-    @Bean
-    public QuantumProcessRunner quantumProcessRunner() {
-        return new QuantumProcessRunner();
-    }
 
     @Bean
     public DeleteCollectionUseCase deleteCollectionUseCase(QuantumCollectionRepository repository) {
@@ -93,4 +91,15 @@ public class UseCaseConfig {
                                                                QuantumDryRunnerPort dryRunner) {
         return new ExplainQuantumPlanService(collectionReader, dryRunner);
     }
+
+    @Bean
+    @Primary
+    QuantumDryRunnerPort quantumDryRunnerPort(
+            ObjectMapper om,
+            io.github.swampus.quantum.QuantumProcessRunner runner
+    ) {
+        return new PythonQuantumDryRunner(om, runner);
+    }
+
+
 }

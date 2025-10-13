@@ -49,7 +49,7 @@ class AbstractGroverSearcherTest {
     @Test
     void testSearch_returnsValidModel() {
         String key = "k2";
-        Set<String> keys = Set.of("k1", "k2");
+        List<String> keys = List.of("k1", "k2");
 
         String json = """
                 {
@@ -93,7 +93,7 @@ class AbstractGroverSearcherTest {
         when(runner.run(anyString(), anyList())).thenReturn("this is not JSON");
 
         assertThrows(QuantumInvalidInputException.class, () ->
-                searcher.search("k1", Set.of("k1", "k2")));
+                searcher.search("k1", List.of("k1", "k2")));
     }
 
 }

@@ -21,7 +21,7 @@ public abstract class AbstractGroverSearcher implements QuantumSearcher {
     private final ObjectMapper objectMapper;
     private final QuantumConfig config;
 
-    public QuantumResultModel search(String key, Set<String> keys) {
+    public QuantumResultModel search(String key, List<String> keys) {
         try {
             String keysJson = objectMapper.writeValueAsString(keys);
             Map<String, String> entries = keys.stream()
