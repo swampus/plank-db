@@ -12,13 +12,15 @@ public class QuantumResultModel {
 
     @Data
     public static class QuantumResult {
+        private Map<String, Double> probabilitiesNoisy;
+        private Map<String, Double> probabilities;
+
         private String matchedKey;
         private String matchedValue;
         private Integer matchedIndex;
         private String topMeasurement;
         private String oracleExpression;
         private int numQubits;
-        private Map<String, Double> probabilities;
         private double confidenceScore;
         private int executionTimeMs;
         private int oracleDepth;

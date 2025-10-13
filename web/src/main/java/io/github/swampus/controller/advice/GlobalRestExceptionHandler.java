@@ -1,60 +1,75 @@
 package io.github.swampus.controller.advice;
 
-import io.github.swampus.exception.CollectionNotFoundException;
-import io.github.swampus.exception.QuantumExternalServiceException;
+import io.github.swampus.exception.*;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
-import io.github.swampus.exception.*;
-import lombok.Builder;
-
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @RestControllerAdvice
 public class GlobalRestExceptionHandler {
 
+    // -- helpers ----------------------------------------------------------------
+
+    private static String nowUtcIso() {
+        return OffsetDateTime.now(ZoneOffset.UTC).toString(); // RFC 3339 string
+    }
+
+    private static ApiError errorBody(HttpStatus status, String message, String path) {
+        return new ApiError(
+                nowUtcIso(),
+                status.value(),
+                status.getReasonPhrase(),
+                message,
+                path
+        );
+    }
+
+    // -- mappings ----------------------------------------------------------------
+
     @ExceptionHandler(QuantumInvalidRequestException.class)
     public ResponseEntity<ApiError> handleInvalid(QuantumInvalidRequestException ex, HttpServletRequest req) {
-        return build(ex, HttpStatus.BAD_REQUEST, req.getRequestURI());
+        var status = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(status).body(errorBody(status, ex.getMessage(), req.getRequestURI()));
     }
 
     @ExceptionHandler({CollectionNotFoundException.class, KeyNotFoundException.class, RangeNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFound(RuntimeException ex, HttpServletRequest req) {
-        return build(ex, HttpStatus.NOT_FOUND, req.getRequestURI());
+        var status = HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(status).body(errorBody(status, ex.getMessage(), req.getRequestURI()));
     }
 
     @ExceptionHandler(QuantumExternalServiceException.class)
     public ResponseEntity<ApiError> handleUpstream(QuantumExternalServiceException ex, HttpServletRequest req) {
-        return build(ex, HttpStatus.BAD_GATEWAY, req.getRequestURI());
+        var status = HttpStatus.BAD_GATEWAY;
+        return ResponseEntity.status(status).body(errorBody(status, ex.getMessage(), req.getRequestURI()));
     }
 
     @ExceptionHandler(QuantumIllegalStateException.class)
     public ResponseEntity<ApiError> handleIllegalState(QuantumIllegalStateException ex, HttpServletRequest req) {
-        return build(ex, HttpStatus.CONFLICT, req.getRequestURI());
+        var status = HttpStatus.CONFLICT;
+        return ResponseEntity.status(status).body(errorBody(status, ex.getMessage(), req.getRequestURI()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleUnexpected(Exception ex, HttpServletRequest req) {
-        return build(ex, HttpStatus.INTERNAL_SERVER_ERROR, req.getRequestURI());
+        var status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return ResponseEntity.status(status).body(errorBody(status, String.valueOf(ex.getMessage()), req.getRequestURI()));
     }
 
-    private ResponseEntity<ApiError> build(Exception ex, HttpStatus status, String path) {
-        ApiError body = ApiError.builder()
-                .timestamp(OffsetDateTime.now())
-                .status(status.value())
-                .error(status.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(path)
-                .build();
-        return ResponseEntity.status(status).body(body);
-    }
-
+    // -- payload -----------------------------------------------------------------
 
     @Builder
-    record ApiError(OffsetDateTime timestamp, int status, String error, String message, String path) {
-    }
+    public record ApiError(
+            String timestamp,
+            int status,
+            String error,
+            String message,
+            String path
+    ) {}
 }

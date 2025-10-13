@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AerExplainDryRunnerAdapter implements QuantumDryRunnerPort {
 
-    // Jackson in infrastructure (OK for Clean Architecture)
-    private final ObjectMapper mapper = new ObjectMapper();
-
     // Python executable path; supports env fallback
     @Value("${quantum.python-executable:${QUANTUM_PYTHON_EXEC:python3}}")
     private String pythonExec;
@@ -41,6 +38,8 @@ public class AerExplainDryRunnerAdapter implements QuantumDryRunnerPort {
     // Hard timeout to avoid zombie python processes
     @Value("${quantum.dryrun.timeout-seconds:120}")
     private int timeoutSeconds;
+
+    private ObjectMapper mapper;
 
     @PostConstruct
     void checkAerImport() {
