@@ -73,7 +73,7 @@ PlankDB is intended to be launched and tested via **Docker**. Although local bui
 git clone https://github.com/swampus/plank-db.git
 cd plank-db
 
-cp env.example .env
+cp .env.example
 docker compose build
 docker compose up
 ```
@@ -83,7 +83,7 @@ This will launch the service and expose the API on port `8080`.
 > 🔁 Alternatively, you can also use classic Docker CLI:
 >
 ```bash
-cp env.example .env
+cp .env.example
 docker build -t plankdb .
 docker run -p 8080:8080 plankdb
 ```
@@ -135,7 +135,7 @@ For full interactive documentation and testing, use the Swagger UI:
 Key endpoints include:
 
 - `POST /collections/{collection}/put` — insert a key-value pair
-- `GET /collections/{collection}/search/{key}` — perform **Grover-based quantum search**h**
+- `GET /collections/{collection}/search/{key}` — perform **Grover-based quantum search**
 
 Each endpoint is documented in the Swagger UI, including:
 - request/response examples
@@ -291,7 +291,37 @@ PlankDB can be configured via environment variables (recommended) or JVM props.
 We ship a template: **`.env.example`** — copy it to `.env` and tweak values:
 
 ```bash
-cp .env.example .env
+cp .env.example
+```
+
+PlankDB reads its config from environment variables. Template: `.env.example`.
+
+| Variable | Default | Description |
+|---|---:|---|
+| `SERVER_PORT` | `8080` | HTTP port |
+| `SPRING_PROFILES_ACTIVE` | `default` | Spring profile (`default`, `dev`, `prod`) |
+| `LOG_LEVEL` | `INFO` | Root logging level |
+| `QUANTUM_EXECUTION_MODE` | `LOCAL` | `LOCAL` (Aer) or `IBM` / `IBM_REAL_PC` |
+| `QUANTUM_PYTHON_EXEC` | `/opt/venv/bin/python` | Python interpreter for Qiskit scripts |
+| `QUANTUM_EXPLAIN_SHOTS` | `2048` | Default shots for Explain dry-run |
+| `QUANTUM_EXPLAIN_SEED` | `42` | Default simulator seed |
+| `IBM_QUANTUM_API_TOKEN` | – | (IBM only) API token |
+| `IBM_QUANTUM_BACKEND` | – | (IBM only) e.g. `ibm_nairobi` |
+
+**`.env.example` (snippet):**
+```env
+SERVER_PORT=8080
+SPRING_PROFILES_ACTIVE=default
+LOG_LEVEL=INFO
+
+QUANTUM_EXECUTION_MODE=LOCAL
+QUANTUM_PYTHON_EXEC=/opt/venv/bin/python
+QUANTUM_EXPLAIN_SHOTS=2048
+QUANTUM_EXPLAIN_SEED=42
+
+# IBM (optional)
+# IBM_QUANTUM_API_TOKEN=
+# IBM_QUANTUM_BACKEND=ibm_nairobi
 ```
 
 ## 5. API Reference
