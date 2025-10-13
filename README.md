@@ -1,4 +1,16 @@
 # PlankDB
+> **Migration note (v0.1.x)**  
+> We removed the committed `.env` and added `.env.example`.  
+> Copy it to `.env` and adjust values for your machine:
+>
+> ```bash
+> cp .env.example .env
+> ```
+>
+> Never commit your `.env`.
+
+
+
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
 
 **Quantum-assisted in-memory key-value store** bridging modern enterprise tech (Spring Boot, REST) with quantum algorithms (Grover via Qiskit).  
@@ -271,6 +283,15 @@ curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 
 ### IBM (plan only, no dry-run)
 ```bash
 curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{"mode":"KEY","key":"k3","backend":"ibm"}' | jq .
+```
+
+### ⚙️ Configuration
+
+PlankDB can be configured via environment variables (recommended) or JVM props.
+We ship a template: **`.env.example`** — copy it to `.env` and tweak values:
+
+```bash
+cp .env.example .env
 ```
 
 ## 5. API Reference

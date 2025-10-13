@@ -1,0 +1,6 @@
+services:
+  plank-db:
+    environment:
+      APP_ERRORS_INCLUDE_STACKTRACE: "true"
+      LOGGING_LEVEL_IO_GITHUB_SWAMPUS: "DEBUG"
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: "DEBUG"
