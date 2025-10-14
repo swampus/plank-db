@@ -1,0 +1,8 @@
+services:
+  plank-db:
+    environment:
+      QUANTUM_EXECUTION_MODE: "LOCAL"
+      QUANTUM_PYTHON_EXEC: "/opt/venv/bin/python"
+      LOG_LEVEL: "DEBUG"
+    ports:
+      - "8081:8080"

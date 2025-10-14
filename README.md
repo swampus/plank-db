@@ -1,4 +1,16 @@
 # PlankDB
+> **Migration note (v0.1.x)**  
+> We removed the committed `.env` and added `.env.example`.  
+> Copy it to `.env` and adjust values for your machine:
+>
+> ```bash
+> cp .env.example .env
+> ```
+>
+> Never commit your `.env`.
+
+
+
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
 
 **Quantum-assisted in-memory key-value store** bridging modern enterprise tech (Spring Boot, REST) with quantum algorithms (Grover via Qiskit).  
@@ -12,10 +24,12 @@ Enables seamless integration of classical systems with quantum backends (local e
 1. [Introduction](#1-introduction)
 2. [Project Overview](#2-project-overview)
 3. [Run](#3-project-run)
-4. [Architecture and Code Structure](#4-architecture-and-code-structure)
-5. [Quantum Search Theory and Practice](#5-quantum-search-theory-and-practice)
-6. [Limitations and Practical Considerations](#6-limitations-and-practical-considerations)
-7. [License](#7-license)
+4. [Quickstart: Explain Quantum Plan (REST)](#4-quickstart-explain-quantum-plan-rest)
+5. [API Reference](#5-api-reference)
+6. [Architecture and Code Structure](#6-architecture-and-code-structure)
+7. [Quantum Search Theory and Practice](#7-quantum-search-theory-and-practice)
+8. [Limitations and Practical Considerations](#8-limitations-and-practical-considerations)
+9. [License](#9-license)
 
 
 ---
@@ -59,6 +73,7 @@ PlankDB is intended to be launched and tested via **Docker**. Although local bui
 git clone https://github.com/swampus/plank-db.git
 cd plank-db
 
+cp .env.example
 docker compose build
 docker compose up
 ```
@@ -68,6 +83,7 @@ This will launch the service and expose the API on port `8080`.
 > 🔁 Alternatively, you can also use classic Docker CLI:
 >
 ```bash
+cp .env.example
 docker build -t plankdb .
 docker run -p 8080:8080 plankdb
 ```
@@ -119,7 +135,7 @@ For full interactive documentation and testing, use the Swagger UI:
 Key endpoints include:
 
 - `POST /collections/{collection}/put` — insert a key-value pair
-- `GET /collections/{collection}/search/{key}` — perform **Grover-based quantum search**h**
+- `GET /collections/{collection}/search/{key}` — perform **Grover-based quantum search**
 
 Each endpoint is documented in the Swagger UI, including:
 - request/response examples
@@ -225,7 +241,172 @@ To enable Grover-based quantum search locally:
 
 **For most users, Docker remains the strongly preferred method for stability and reproducibility.**
 
-## 4. Architecture and Code Structure
+## 4. Quickstart: Explain Quantum Plan (REST)
+
+The **Explain Quantum Plan** endpoint builds a Grover search plan (key or range) and, for the local backend (Aer), performs a simulator **dry-run** to return measurement probabilities. On IBM, it returns the **plan only** (no dry-run) to keep the response fast and deterministic.
+
+> **Swagger UI:** `http://localhost:8080/swagger-ui.html`  
+> A sample collection `test` is auto-created on startup with keys `k1..k4`.
+
+## Run the service
+
+```bash
+docker build -t plankdb:latest .
+docker run --rm -p 8080:8080 --env-file .env plankdb:latest
+```
+
+## Example requests
+
+### KEY (local, with dry-run)
+```bash
+curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{
+        "mode": "KEY",
+        "key": "k2",
+        "backend": "local",
+        "strategy": "AUTO",
+        "shots": 512,
+        "seed": 42
+      }' | jq .
+```
+
+### RANGE (local, with dry-run)
+```bash
+curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{
+        "mode": "RANGE",
+        "fromKey": "k2",
+        "toKey": "k4",
+        "backend": "local",
+        "strategy": "AUTO"
+      }' | jq .
+```
+
+### IBM (plan only, no dry-run)
+```bash
+curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{"mode":"KEY","key":"k3","backend":"ibm"}' | jq .
+```
+
+### ⚙️ Configuration
+
+PlankDB can be configured via environment variables (recommended) or JVM props.
+We ship a template: **`.env.example`** — copy it to `.env` and tweak values:
+
+```bash
+cp .env.example
+```
+
+PlankDB reads its config from environment variables. Template: `.env.example`.
+
+| Variable | Default | Description |
+|---|---:|---|
+| `SERVER_PORT` | `8080` | HTTP port |
+| `SPRING_PROFILES_ACTIVE` | `default` | Spring profile (`default`, `dev`, `prod`) |
+| `LOG_LEVEL` | `INFO` | Root logging level |
+| `QUANTUM_EXECUTION_MODE` | `LOCAL` | `LOCAL` (Aer) or `IBM` / `IBM_REAL_PC` |
+| `QUANTUM_PYTHON_EXEC` | `/opt/venv/bin/python` | Python interpreter for Qiskit scripts |
+| `QUANTUM_EXPLAIN_SHOTS` | `2048` | Default shots for Explain dry-run |
+| `QUANTUM_EXPLAIN_SEED` | `42` | Default simulator seed |
+| `IBM_QUANTUM_API_TOKEN` | – | (IBM only) API token |
+| `IBM_QUANTUM_BACKEND` | – | (IBM only) e.g. `ibm_nairobi` |
+
+**`.env.example` (snippet):**
+```env
+SERVER_PORT=8080
+SPRING_PROFILES_ACTIVE=default
+LOG_LEVEL=INFO
+
+QUANTUM_EXECUTION_MODE=LOCAL
+QUANTUM_PYTHON_EXEC=/opt/venv/bin/python
+QUANTUM_EXPLAIN_SHOTS=2048
+QUANTUM_EXPLAIN_SEED=42
+
+# IBM (optional)
+# IBM_QUANTUM_API_TOKEN=
+# IBM_QUANTUM_BACKEND=ibm_nairobi
+```
+
+## 5. API Reference
+
+## POST /api/rest/v1/collections/{collection}/explain
+
+Builds an explainable Grover **plan**.
+- If `backend=local`, also runs a simulator **dry-run** (Aer) and returns probabilities.
+- If `backend=ibm`, returns **plan only**; `dryRun` is `null`.
+
+### Request (JSON)
+```json
+{
+  "mode": "KEY | RANGE",
+  "key": "k2",
+  "fromKey": "k2",
+  "toKey": "k4",
+  "backend": "local | ibm",
+  "strategy": "AUTO | FIXED",
+  "iterations": 2,
+  "shots": 2048,
+  "seed": 42
+}
+```
+
+**Fields**
+- `mode` **(required)**: `KEY` or `RANGE`.
+- `key`: required when `mode=KEY`.
+- `fromKey`, `toKey`: optional bounds when `mode=RANGE` (lexicographic).
+- `backend`: `local` (default) or `ibm`.
+- `strategy`: `AUTO` (default) computes `floor(π/4 * sqrt(N/M))`; `FIXED` uses `iterations`.
+- `iterations`: used only when `strategy=FIXED` (min 1).
+- `shots`, `seed`: optional simulator parameters for local dry-run.
+
+### Response (JSON)
+```json
+{
+  "plan": {
+    "mode": "KEY",
+    "targetLabel": "k2",
+    "encodingMap": { "k1": "00", "k2": "01", "k3": "10", "k4": "11" },
+    "markedStates": ["01"],
+    "estimatedM": 1,
+    "collectionSizeN": 4,
+    "numQubits": 2,
+    "optimalIterations": 1,
+    "iterationsUsed": 1,
+    "oracleExpression": "(x01)",
+    "estimatedOracleDepth": 4,
+    "estimatedGateCounts": { "h": 4, "x": 2, "mcx": 1 },
+    "backend": {
+      "name": "local/aer_simulator",
+      "shots": 512,
+      "seed": 42,
+      "noiseModel": false
+    },
+    "notes": [
+      "Grover ~√(N/M); AUTO uses floor(π/4 * sqrt(N/M)).",
+      "Diffusion amplifies the marked states after the oracle phase flip.",
+      "Depth/gate counts are coarse estimates; actual values depend on oracle synthesis."
+    ]
+  },
+  "dryRun": {
+    "topMeasurement": "01",
+    "probabilities": { "01": 0.86, "11": 0.14 },
+    "confidenceScore": 0.86,
+    "executionTimeMs": 12
+  }
+}
+```
+
+> On IBM, `dryRun` is `null`.
+
+### Error responses
+- `400` — invalid input (e.g., missing `mode`/`key`, malformed range)
+- `404` — collection/key/range not found
+- `502` — simulator/backend error during dry-run
+
+### Notes
+- Encoding is lexicographic over the current set of keys; changing keys changes the `encodingMap`.
+- `optimalIterations` depends on collection size `N` and number of marked states `M`.
+- Dry-run probabilities are stochastic; use `seed` for reproducibility.
+
+
+## 6. Architecture and Code Structure
 
 PlankDB follows the principles of **Clean Architecture**, promoting clear separation of concerns and independence between layers. This structure improves testability, modularity, and long-term maintainability — essential qualities for both experimental and production-grade systems.
 
@@ -279,23 +460,24 @@ This design makes it easy to:
 
 By inverting dependencies and structuring around use cases, PlankDB remains flexible, extendable, and robust against changes in technology or platform.
 
-## 5. Quantum Search Theory and Practice
+## 7. Quantum Search Theory and Practice
 
 <details>
 <summary>📘 Expand subsections</summary>
 
-- [5.1 Quantum Superposition: The Theoretical Basis](#51-quantum-superposition-the-theoretical-basis)
-- [5.2 Grover's Algorithm Explained](#52-grovers-algorithm-explained)
-- [5.3 How PlankDB Uses Grover](#53-how-plankdb-uses-grover)
-- [5.4 Probabilistic Nature of Quantum Results](#54-probabilistic-nature-of-quantum-results)
-- [5.5 When Will Quantum Search Matter?](#55-when-will-quantum-search-matter)
-- [5.6 DTO Breakdown and References](#56-dto-breakdown-and-references)
+- [7.1 Quantum Superposition: The Theoretical Basis](#51-quantum-superposition-the-theoretical-basis)
+- [7.2 Grover's Algorithm Explained](#72-grovers-algorithm-explained)
+- [7.3 How PlankDB Uses Grover](#73-how-plankdb-uses-grover)
+- [7.4 Probabilistic Nature of Quantum Results](#74-probabilistic-nature-of-quantum-results)
+- [7.5 When Will Quantum Search Matter?](#75-when-will-quantum-search-matter)
+- [7.6 DTO Breakdown and References](#76-dto-breakdown-and-references)
+- [7.7 Explain Quantum Plan: Why and How](#77-explain-quantum-plan-why-and-how)
 
 </details>
 
 ---
 
-### 5.1 Quantum Superposition: The Theoretical Basis
+### 7.1 Quantum Superposition: The Theoretical Basis
 
 At the heart of quantum computing lies the concept of **superposition** — a fundamental difference from classical computation.
 
@@ -325,7 +507,7 @@ Each possible key is mapped to a quantum state in superposition, and the oracle 
 
 ---
 
-### 5.2 Grover's Algorithm Explained
+### 7.2 Grover's Algorithm Explained
 
 Grover's algorithm allows searching an unsorted list of `N` items in approximately **√N** steps — a quadratic speedup over classical search.
 
@@ -343,7 +525,7 @@ This algorithm is implemented using Qiskit circuits — either locally (Aer simu
 
 ---
 
-### 5.3 How PlankDB Uses Grover
+### 7.3 How PlankDB Uses Grover
 
 In PlankDB, both `search` and `range` operations rely on Grover's algorithm:
 
@@ -356,7 +538,7 @@ This is not efficient for production — O(n) time to prepare the state — but 
 
 ---
 
-### 5.4 Probabilistic Nature of Quantum Results
+### 7.4 Probabilistic Nature of Quantum Results
 
 Quantum search results are inherently **probabilistic** — a correct answer is likely, but not guaranteed.
 
@@ -395,7 +577,7 @@ This DTO (`QuantumResultDTO`) includes both raw results and scientific context f
 
 ---
 
-### 5.5 When Will Quantum Search Matter?
+### 7.5 When Will Quantum Search Matter?
 
 Grover's algorithm provides meaningful advantage when:
 
@@ -409,7 +591,7 @@ However, PlankDB provides a useful demonstration of how such systems **could** w
 
 ---
 
-### 5.6 DTO Breakdown and References
+### 7.6 DTO Breakdown and References
 
 #### 📘 QuantumResultDTO: Structure Explanation
 
@@ -464,8 +646,37 @@ q_1: ———H———●————X———H———M
 - Qiskit Grover API: https://qiskit.org/documentation/stubs/qiskit.algorithms.Grover.html
 - IBM Quantum Runtime: https://docs.quantum.ibm.com/run
 
+### 🔍 7.7 Explain Quantum Plan: Why and How
 
-## 6. Limitations and Practical Considerations
+**What the plan contains** 📦  
+The Explain endpoint returns a *deterministic* description of a Grover search **before** (and optionally alongside) any execution:
+- Lexicographic **encodingMap** (key → fixed-width bitstring) 🗺️
+- **markedStates** (bitstrings for the key/range) 🎯
+- **numQubits** 🔢 and human-readable **oracleExpression** 🧾
+- **optimalIterations** `k ≈ floor(π/4 · √(N/M))` (AUTO) or user-provided **FIXED** value 🧭
+- Coarse **gate/depth estimates** (heuristics) 📐
+- Backend metadata (local Aer vs. IBM Runtime) 🧩
+
+**Why it’s useful** 💡
+- Makes the algorithm **transparent** (what is encoded, what is marked, how many iterations) 🔦
+- Ensures **reproducibility** (same inputs → same plan) 🔁
+- Enables fast **local** validation via **dry-run** (Aer) to visualize probability amplification 📊
+
+**How to read the dry-run** 🧪
+- `topMeasurement` — most probable bitstring; `confidenceScore` — its probability ✅
+- With multiple marked states (range), probability mass **splits** across them ↔️
+- Under-rotation (too few iterations) → flatter histogram; over-rotation can **shift** mass away — expected in Grover 🔄
+
+**Oracle notes** 🧰  
+Bitstrings are marked by a phase oracle (multi-controlled Z) synthesized as `H • MCX • H` on the last qubit, with `X` pre/post around zero-bits to match the pattern. Depth and gate counts depend on decomposition (device topology, transpiler), so estimates are **intentionally coarse**.
+
+**Limitations** ⚠️
+- Building the **encodingMap** is classical **O(N)** 🐢
+- Gate/depth metrics are **heuristics**; real circuits vary with synthesis 🧮
+- Dry-run is **local** and noise-free; on IBM the endpoint returns **plan only** to avoid queue time and hardware noise 🚫🛰️
+
+
+## 8. Limitations and Practical Considerations
 
 While PlankDB demonstrates the principles of quantum search in a practical Java-based application, it is subject to several real-world limitations that must be considered.
 
@@ -513,7 +724,7 @@ As quantum hardware matures and **QRAM** becomes available, systems like PlankDB
 
 Until then, PlankDB remains a valuable **educational and architectural prototype** for quantum-enhanced search systems.
 
-## 7. License
+## 9. License
 
 This project is licensed under the **MIT License** — a permissive open-source license.
 

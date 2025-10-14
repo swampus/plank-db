@@ -37,3 +37,6 @@ Thumbs.db
 # Docker
 *.pid
 *.pid.lock
+
+.env
+!.env

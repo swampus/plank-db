@@ -8,6 +8,7 @@ import io.github.swampus.ports.QuantumSearcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,12 +39,12 @@ class SearchEntryUseCaseTest {
         var expected = new QuantumResultModel();
 
         when(repository.findByName("demo")).thenReturn(Optional.of(collection));
-        when(searcher.search("k1", Set.of("k1", "k2"))).thenReturn(expected);
+        when(searcher.search("k1", List.of("k1", "k2"))).thenReturn(expected);
 
         var result = useCase.execute("demo", "k1");
 
         assertEquals(expected, result);
-        verify(searcher).search("k1", Set.of("k1", "k2"));
+        verify(searcher).search("k1", List.of("k1", "k2"));
     }
 
     @Test
