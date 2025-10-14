@@ -9,7 +9,7 @@
 >
 > Never commit your `.env`.
 
-
+[![Release](https://img.shields.io/github/v/release/swampus/plank-db?label=release)](https://github.com/swampus/plank-db/releases/latest)
 
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
 
