@@ -1,7 +1,6 @@
 # PlankDB
-> **Migration note (v0.1.x)**  
-> We removed the committed `.env` and added `.env.example`.  
-> Copy it to `.env` and adjust values for your machine:
+> **Local configuration**
+> Copy the credential-free `.env.example` to a private `.env` and adjust it for your machine. Keep an existing private configuration instead of overwriting it:
 >
 > ```bash
 > cp .env.example .env
@@ -18,7 +17,7 @@ Enables seamless integration of classical systems with quantum backends (local e
 🏆 *Featured in [Awesome Quantum Software](https://github.com/qosf/awesome-quantum-software#quantum-tools) by QOSF.*
 
 
-**Quantum-Accelerated Key-Value Store**
+**Experimental quantum-assisted key-value store**
 
 ## Table of Contents
 1. [Introduction](#1-introduction)
@@ -30,6 +29,45 @@ Enables seamless integration of classical systems with quantum backends (local e
 7. [Quantum Search Theory and Practice](#7-quantum-search-theory-and-practice)
 8. [Limitations and Practical Considerations](#8-limitations-and-practical-considerations)
 9. [License](#9-license)
+10. [Quantum Oracle Index (v0.2.0)](#quantum-oracle-index-v020)
+
+## Quantum Oracle Index (v0.2.0)
+
+A separate optional extension compiles typed Boolean predicates into **reversible phase oracles** and executes Grover on **local Qiskit Aer**. Its execution path is predicate AST → circuit compilation → Grover → measurement → classical verification. Oracle construction does not enumerate matching states. EQUALS, BITMASK_EQUALS, AND and OR are supported over the virtual integer domain `0 <= x < 2^width`, with 2–8 search qubits and a conservative 16-total-qubit budget.
+
+The compiler uses direct phase controls where efficient and clean compute/phase/uncompute circuits for compound expressions. Canonical predicates have deterministic fingerprints; bounded file-backed QPY templates persist across Python processes and container restarts. The cache uses versioned identity, payload checksums, file locking and atomic writes. Its filesystem must remain trusted application storage. Exact statevector tests check signs, relative phases, bit ordering and ancilla cleanup against a separate classical evaluator.
+
+This is an educational simulator experiment over a **virtual domain**, without record loading or QRAM. **No database speedup has been demonstrated.** Existing collection APIs and LOCAL/IBM modes are preserved; this extension requires no IBM account, token, paid service, GPU or hardware calls.
+
+```bash
+cp .env.example .env  # credential-free local demo; enables QUANTUM_ORACLE_ENABLED
+docker compose build
+docker compose up -d
+```
+
+Open **http://localhost:8085/oracle-lab/**. The lab offers predicate controls, the actual Qiskit circuit, measured probabilities, a full bit grid, classical verification, cache/timing statistics and a recorded compiler comparison for matching reference parameters. All quantum results are labeled simulated. Swagger remains at http://localhost:8085/swagger-ui.html. The working port is **8085**. The extension defaults to disabled when `QUANTUM_ORACLE_ENABLED` is absent; the credential-free example enables it for the local demo.
+
+```bash
+curl -sS http://localhost:8085/api/rest/v1/oracle/search \
+  -H 'Content-Type: application/json' \
+  -d '{"width":4,"predicate":{"type":"BITMASK_EQUALS","mask":15,"value":9},"iterations":3,"shots":1024,"seed":42}'
+```
+
+Explore iterations 0, 3 and 6 to observe amplification and overshooting. `/api/rest/v1/oracle/explain` compiles the same circuit without measuring. OR requires explicit iterations; its analytical solution count is intentionally unknown.
+
+Recorded reference comparison: width 4, mask 15, value 9, three iterations, 1024 shots, seed 42; Qiskit 1.1.1, Aer 0.14.2, `u,cx` basis, optimization level 1. Oracle-only and full-Grover figures are separate:
+
+| Transpiled circuit metric | Original compiler | Optimized compiler |
+| --- | ---: | ---: |
+| Oracle CX gates | 72 | 14 |
+| Full three-iteration Grover CX gates | 258 | 84 |
+| Full three-iteration circuit depth | 455 | 158 |
+
+These are circuit-cost reductions and measured simulator improvements. Warm-cache HTTP server medians were about 722 ms versus 713 ms with overlapping variability; **no robust end-to-end speedup was established**. Theoretical success was unchanged. Full measurements, negative results and reproducibility limits are in [optimization results](docs/quantum-oracle/OPTIMIZATION_RESULTS.md), with [raw CSV/JSON evidence](docs/quantum-oracle/benchmarks/audit-2026-10-31/results.json).
+
+**Known limitations:** general OR requires manual iterations; the oracle domain is not arbitrary database storage; the existing legacy RANGE path can return “No match found” for populated multi-key ranges. Its route remains available and its known correctness defect is unchanged. HTTP smoke success does not establish mathematical correctness of that legacy algorithm. See [changelog](CHANGELOG.md) and [draft v0.2.0 release notes](docs/releases/v0.2.0.md).
+
+See [architecture and API](docs/quantum-oracle/ARCHITECTURE.md), [mathematics](docs/quantum-oracle/MATHEMATICS.md), [historical v1 experiments](docs/quantum-oracle/EXPERIMENTS.md), [adversarial audit](docs/quantum-oracle/INDEPENDENT_AUDIT.md), and [reproduction/test commands](docs/quantum-oracle/REPRODUCIBILITY.md). The audit uses an independent evaluator in automated tests; it is not an external certification.
 
 
 ---
@@ -40,9 +78,7 @@ Enables seamless integration of classical systems with quantum backends (local e
 
 The main highlight of PlankDB is the integration of Java code with quantum search. When a search request is performed, PlankDB may invoke the Grover algorithm on a quantum emulator or on real quantum hardware (via IBM Qiskit Runtime).
 
-Conceptually, the `QuantumMap` object behaves like a regular `Map`, but during lookup operations it switches to quantum mode, reflecting the demonstration purpose of the project.
-
-Although PlankDB implements the `Map<Key, Value>` interface, the underlying search is not hash-based. This is not a true hash map, but rather an abstract unsorted collection, over which quantum selection is applied.
+PlankDB stores collections in a classical in-memory repository. Its legacy search ports can invoke Grover on encoded key sets; the Quantum Oracle Index provides a separate virtual bit-vector execution path. The project demonstrates these integrations without claiming to replace classical storage or its indexing costs.
 
 ### 📊 Search Complexity Comparison
 
@@ -53,6 +89,8 @@ Although PlankDB implements the `Map<Key, Value>` interface, the underlying sear
 | Quantum search (Grover)   | **O(√n)**              |
 
 Thus, PlankDB demonstrates the properties and limitations of applying Grover's quantum search algorithm to unstructured data.
+
+The quantum entry in this table describes idealized oracle-query complexity. It excludes oracle construction, data encoding/loading, classical simulation and process/transport overhead; it is not a measured database runtime comparison.
 
 Additionally, PlankDB showcases how classical programming environments (such as Java) may interact with quantum computing systems. In the near future, we may expect a variety of integration scenarios:
 
@@ -65,7 +103,7 @@ PlankDB represents a prototype for what practical quantum search integration cou
 
 ## 2. Project Overview
 
-PlankDB is intended to be launched and tested via **Docker**. Although local builds are technically possible, the project has only been fully tested within Docker containers.
+**Docker** is the recommended local deployment. Java and Python tests have also been executed on the host; exact environments and executed checks are recorded in the reproduction and release-validation documents.
 
 ### 🔧 Quick Start with Docker
 
@@ -73,19 +111,19 @@ PlankDB is intended to be launched and tested via **Docker**. Although local bui
 git clone https://github.com/swampus/plank-db.git
 cd plank-db
 
-cp .env.example
+cp .env.example .env
 docker compose build
 docker compose up
 ```
 
-This will launch the service and expose the API on port `8080`.
+This will launch the service and expose the API on port `8085`.
 
 > 🔁 Alternatively, you can also use classic Docker CLI:
 >
 ```bash
-cp .env.example
+cp .env.example .env
 docker build -t plankdb .
-docker run -p 8080:8080 plankdb
+docker run --env-file .env -p 8085:8085 plankdb
 ```
 
 ### 🗂️ Repository Structure
@@ -127,10 +165,10 @@ These variables allow switching between local simulation and IBM Quantum cloud e
 
 ### 🔗 REST API and Swagger UI
 
-PlankDB exposes a RESTful HTTP API available on port `8080`.  
+PlankDB exposes a RESTful HTTP API available on port `8085`.
 For full interactive documentation and testing, use the Swagger UI:
 
-➡️ [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+➡️ [http://localhost:8085/swagger-ui.html](http://localhost:8085/swagger-ui.html)
 
 Key endpoints include:
 
@@ -154,7 +192,7 @@ To build and run PlankDB locally, you need the following installed:
 - [Apache Maven](https://maven.apache.org/) – used for project compilation
 - (Optional) [`make`](https://www.gnu.org/software/make/) – used as a shortcut for build commands
 
-> **Note**: `make build` is a wrapper for `mvn clean install -DskipTests`. Maven is required in both cases.
+> **Note**: `make build` wraps `mvn clean package -DskipTests`; use `mvn clean test` to execute tests. The legacy Makefile has IBM-oriented environment defaults; use the LOCAL Docker setup above for the Oracle Lab.
 
 ---
 
@@ -168,10 +206,10 @@ To get started:
 docker compose up --build
 ```
 
-> ⚠️ **Java 17 is required** — newer versions (e.g. Java 21) are not compatible due to API changes.
+> The project targets **Java 17**, which Docker builds and runs. Host tests were also executed with Java 21 using `release=17`; this is not a compatibility claim for every newer JDK.
 
 Once running, the API will be available at:  
-👉 http://localhost:8080/swagger-ui/index.html
+👉 http://localhost:8085/swagger-ui/index.html
 
 For consistent behavior across platforms, we **highly recommend using** [Docker Desktop](https://www.docker.com/products/docker-desktop/) — it's free for personal and small business use.
 
@@ -209,7 +247,7 @@ However, for users who wish to run PlankDB outside of Docker, here are the recom
 
 5. **Run the application**
    ```bash
-   java -jar target/plank-db-*.jar
+   java -jar web/target/plank-db.jar
    ```
 
 #### 🧪 Quantum Execution Requirements (Optional but needed for full features)
@@ -224,17 +262,17 @@ To enable Grover-based quantum search locally:
 
 7. **Install Qiskit and dependencies**
    ```bash
-   pip install -r python/requirements.txt
+   pip install -r requirements.txt
    ```
 
 8. **Set environment variables**
-    - Either export manually or create a `.env` file in the root folder:
+    - Export variables into the host process environment; Spring does not automatically load the Docker `.env` file for a host-launched JAR:
       ```env
       QUANTUM_EXECUTION_MODE=LOCAL
       ```
 
 9. **Configure application settings**
-    - Edit `src/main/resources/application.yml` if needed for backend paths or collection settings.
+    - Host execution needs the interpreter/script paths described in [reproducibility](docs/quantum-oracle/REPRODUCIBILITY.md). Configuration is in `web/src/main/resources/application.yml`.
 
 > ⚠️ Note: On some systems, Python subprocess handling or Qiskit versions may cause errors.
 > This mode is best suited for development, debugging, or integration experimentation.
@@ -245,21 +283,21 @@ To enable Grover-based quantum search locally:
 
 The **Explain Quantum Plan** endpoint builds a Grover search plan (key or range) and, for the local backend (Aer), performs a simulator **dry-run** to return measurement probabilities. On IBM, it returns the **plan only** (no dry-run) to keep the response fast and deterministic.
 
-> **Swagger UI:** `http://localhost:8080/swagger-ui.html`  
+> **Swagger UI:** `http://localhost:8085/swagger-ui.html`
 > A sample collection `test` is auto-created on startup with keys `k1..k4`.
 
 ## Run the service
 
 ```bash
 docker build -t plankdb:latest .
-docker run --rm -p 8080:8080 --env-file .env plankdb:latest
+docker run --rm -p 8085:8085 --env-file .env plankdb:latest
 ```
 
 ## Example requests
 
 ### KEY (local, with dry-run)
 ```bash
-curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{
+curl -s -X POST http://localhost:8085/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{
         "mode": "KEY",
         "key": "k2",
         "backend": "local",
@@ -271,7 +309,7 @@ curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 
 
 ### RANGE (local, with dry-run)
 ```bash
-curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{
+curl -s -X POST http://localhost:8085/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{
         "mode": "RANGE",
         "fromKey": "k2",
         "toKey": "k4",
@@ -282,7 +320,7 @@ curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 
 
 ### IBM (plan only, no dry-run)
 ```bash
-curl -s -X POST http://localhost:8080/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{"mode":"KEY","key":"k3","backend":"ibm"}' | jq .
+curl -s -X POST http://localhost:8085/api/rest/v1/collections/test/explain   -H 'Content-Type: application/json'   -d '{"mode":"KEY","key":"k3","backend":"ibm"}' | jq .
 ```
 
 ### ⚙️ Configuration
@@ -291,14 +329,14 @@ PlankDB can be configured via environment variables (recommended) or JVM props.
 We ship a template: **`.env.example`** — copy it to `.env` and tweak values:
 
 ```bash
-cp .env.example
+cp .env.example .env
 ```
 
 PlankDB reads its config from environment variables. Template: `.env.example`.
 
 | Variable | Default | Description |
 |---|---:|---|
-| `SERVER_PORT` | `8080` | HTTP port |
+| `SERVER_PORT` | `8085` | HTTP port |
 | `SPRING_PROFILES_ACTIVE` | `default` | Spring profile (`default`, `dev`, `prod`) |
 | `LOG_LEVEL` | `INFO` | Root logging level |
 | `QUANTUM_EXECUTION_MODE` | `LOCAL` | `LOCAL` (Aer) or `IBM` / `IBM_REAL_PC` |
@@ -310,7 +348,7 @@ PlankDB reads its config from environment variables. Template: `.env.example`.
 
 **`.env.example` (snippet):**
 ```env
-SERVER_PORT=8080
+SERVER_PORT=8085
 SPRING_PROFILES_ACTIVE=default
 LOG_LEVEL=INFO
 

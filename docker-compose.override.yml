@@ -5,4 +5,4 @@ services:
       QUANTUM_PYTHON_EXEC: "/opt/venv/bin/python"
       LOG_LEVEL: "DEBUG"
     ports:
-      - "8081:8080"
+      - "8085:8085"

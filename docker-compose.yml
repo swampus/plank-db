@@ -8,7 +8,13 @@ services:
       - "8085:8085"
     env_file:
       - .env
-    volumes:
-      - ./python:/app/python
     environment:
       PYTHONPATH: /app/python
+      # Compiled QPY templates survive Java/Python/container restarts.
+      QUANTUM_ORACLE_CACHE_DIR: /app/oracle-cache
+    volumes:
+      - ./python:/app/python
+      - oracle-cache:/app/oracle-cache
+
+volumes:
+  oracle-cache:

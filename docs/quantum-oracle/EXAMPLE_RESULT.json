@@ -1,0 +1,158 @@
+{
+  "compiler_version": "plank-oracle-v1",
+  "schema_version": 1,
+  "normalized_predicate": {
+    "type": "BITMASK_EQUALS",
+    "mask": 15,
+    "value": 9
+  },
+  "oracle_fingerprint": "be12d2496093564a149d966f9e350193a96bacf68e1080f2c7c94f55afadd127",
+  "backend": "local/aer_simulator/statevector/CPU",
+  "qiskit_version": "1.1.1",
+  "aer_version": "0.14.2",
+  "simulated": true,
+  "cache_hit": true,
+  "analytical_solution_count": 1,
+  "iterations": 3,
+  "shots": 1024,
+  "seed": 42,
+  "theoretical_success_probability": 0.9613189697265625,
+  "observed_valid_probability": 0.96875,
+  "measurements": [
+    {
+      "bits": "0000",
+      "value": 0,
+      "count": 4,
+      "probability": 0.00390625,
+      "valid": false
+    },
+    {
+      "bits": "0001",
+      "value": 1,
+      "count": 2,
+      "probability": 0.001953125,
+      "valid": false
+    },
+    {
+      "bits": "0011",
+      "value": 3,
+      "count": 1,
+      "probability": 0.0009765625,
+      "valid": false
+    },
+    {
+      "bits": "0101",
+      "value": 5,
+      "count": 2,
+      "probability": 0.001953125,
+      "valid": false
+    },
+    {
+      "bits": "0110",
+      "value": 6,
+      "count": 1,
+      "probability": 0.0009765625,
+      "valid": false
+    },
+    {
+      "bits": "1000",
+      "value": 8,
+      "count": 2,
+      "probability": 0.001953125,
+      "valid": false
+    },
+    {
+      "bits": "1001",
+      "value": 9,
+      "count": 992,
+      "probability": 0.96875,
+      "valid": true
+    },
+    {
+      "bits": "1010",
+      "value": 10,
+      "count": 7,
+      "probability": 0.0068359375,
+      "valid": false
+    },
+    {
+      "bits": "1011",
+      "value": 11,
+      "count": 1,
+      "probability": 0.0009765625,
+      "valid": false
+    },
+    {
+      "bits": "1100",
+      "value": 12,
+      "count": 5,
+      "probability": 0.0048828125,
+      "valid": false
+    },
+    {
+      "bits": "1101",
+      "value": 13,
+      "count": 2,
+      "probability": 0.001953125,
+      "valid": false
+    },
+    {
+      "bits": "1110",
+      "value": 14,
+      "count": 1,
+      "probability": 0.0009765625,
+      "valid": false
+    },
+    {
+      "bits": "1111",
+      "value": 15,
+      "count": 4,
+      "probability": 0.00390625,
+      "valid": false
+    }
+  ],
+  "top_measurement": {
+    "bits": "1001",
+    "value": 9,
+    "count": 992,
+    "probability": 0.96875,
+    "valid": true
+  },
+  "classical_baseline": {
+    "valid_states": [
+      9
+    ],
+    "solution_count": 1,
+    "elapsed_ms": 0.003961000402341597
+  },
+  "metrics": {
+    "search_qubits": 4,
+    "ancilla_qubits": 1,
+    "total_qubits": 5,
+    "statevector_bytes": 512,
+    "oracle_depth": 129,
+    "total_depth": 455,
+    "gate_counts": {
+      "u": 293,
+      "cx": 258,
+      "measure": 4
+    },
+    "two_qubit_gates": 258
+  },
+  "timings": {
+    "normalization_ms": 0.014265000572777353,
+    "compilation_ms": 0.0,
+    "cache_lookup_and_write_ms": 0.5992349997541169,
+    "circuit_construction_ms": 0.6848689990874846,
+    "transpilation_ms": 325.92516600016097,
+    "simulation_ms": 6.638859000304365,
+    "verification_ms": 0.01618599890207406,
+    "python_total_ms": 335.6000080002559
+  },
+  "oracle_circuit": "                                   \nq_0: \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25a0\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25a0\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u250c\u2500\u2500\u2500\u2510  \u2502  \u250c\u2500\u2500\u2500\u2510\u250c\u2500\u2500\u2500\u2510  \u2502  \u250c\u2500\u2500\u2500\u2510\nq_1: \u2524 X \u251c\u2500\u2500\u25a0\u2500\u2500\u2524 X \u251c\u2524 X \u251c\u2500\u2500\u25a0\u2500\u2500\u2524 X \u251c\n     \u251c\u2500\u2500\u2500\u2524  \u2502  \u251c\u2500\u2500\u2500\u2524\u251c\u2500\u2500\u2500\u2524  \u2502  \u251c\u2500\u2500\u2500\u2524\nq_2: \u2524 X \u251c\u2500\u2500\u25a0\u2500\u2500\u2524 X \u251c\u2524 X \u251c\u2500\u2500\u25a0\u2500\u2500\u2524 X \u251c\n     \u2514\u2500\u2500\u2500\u2518  \u2502  \u2514\u2500\u2500\u2500\u2518\u2514\u2500\u2500\u2500\u2518  \u2502  \u2514\u2500\u2500\u2500\u2518\nq_3: \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25a0\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25a0\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n          \u250c\u2500\u2534\u2500\u2510\u250c\u2500\u2500\u2500\u2510     \u250c\u2500\u2534\u2500\u2510     \nq_4: \u2500\u2500\u2500\u2500\u2500\u2524 X \u251c\u2524 Z \u251c\u2500\u2500\u2500\u2500\u2500\u2524 X \u251c\u2500\u2500\u2500\u2500\u2500\n          \u2514\u2500\u2500\u2500\u2518\u2514\u2500\u2500\u2500\u2518     \u2514\u2500\u2500\u2500\u2518     ",
+  "warnings": [
+    "Local CPU Aer simulation; no hardware or QRAM. Virtual bit-vector domain, not database storage.",
+    "Classical brute-force baseline is separate; simulator wall time is not a quantum speedup."
+  ],
+  "end_to_end_ms": 769.892545
+}
