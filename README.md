@@ -1,74 +1,93 @@
 # PlankDB
-> **Local configuration**
-> Copy the credential-free `.env.example` to a private `.env` and adjust it for your machine. Keep an existing private configuration instead of overwriting it:
->
-> ```bash
-> cp .env.example .env
-> ```
->
-> Never commit your `.env`.
 
-[![Release](https://img.shields.io/github/v/release/swampus/plank-db?label=release)](https://github.com/swampus/plank-db/releases/latest)
-
+[![Release](https://img.shields.io/github/v/release/swampus/plank-db?label=release)](https://github.com/swampus/plank-db/releases/tag/v0.2.0)
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/qosf/awesome-quantum-software#quantum-tools)
 
-**Quantum-assisted in-memory key-value store** bridging modern enterprise tech (Spring Boot, REST) with quantum algorithms (Grover via Qiskit).  
-Enables seamless integration of classical systems with quantum backends (local emulator or IBM Q).  
-🏆 *Featured in [Awesome Quantum Software](https://github.com/qosf/awesome-quantum-software#quantum-tools) by QOSF.*
+**Experimental quantum-assisted key-value store and reversible oracle compiler — Java, Spring Boot, Python, and Qiskit.**
 
+PlankDB combines a classical in-memory key-value API with Grover-based quantum search experiments. **v0.2.0** adds an independent **Quantum Oracle Index** extension that compiles Boolean predicates directly into reversible phase-oracle circuits for local Qiskit Aer simulation, without first enumerating matching states. The existing Java, REST, and legacy LOCAL/IBM interfaces are preserved.
 
-**Experimental quantum-assisted key-value store**
-
-## Table of Contents
-1. [Introduction](#1-introduction)
-2. [Project Overview](#2-project-overview)
-3. [Run](#3-project-run)
-4. [Quickstart: Explain Quantum Plan (REST)](#4-quickstart-explain-quantum-plan-rest)
-5. [API Reference](#5-api-reference)
-6. [Architecture and Code Structure](#6-architecture-and-code-structure)
-7. [Quantum Search Theory and Practice](#7-quantum-search-theory-and-practice)
-8. [Limitations and Practical Considerations](#8-limitations-and-practical-considerations)
-9. [License](#9-license)
-10. [Quantum Oracle Index (v0.2.0)](#quantum-oracle-index-v020)
+**[v0.2.0 Release](https://github.com/swampus/plank-db/releases/tag/v0.2.0)** · **[Run the Oracle Lab](#try-the-quantum-oracle-lab)** · **[Research documentation](#research--technical-documentation)** · **[Source and benchmarks](docs/quantum-oracle/benchmarks/audit-2026-10-31/results.json)**
 
 ## Quantum Oracle Index (v0.2.0)
 
-A separate optional extension compiles typed Boolean predicates into **reversible phase oracles** and executes Grover on **local Qiskit Aer**. Its execution path is predicate AST → circuit compilation → Grover → measurement → classical verification. Oracle construction does not enumerate matching states. EQUALS, BITMASK_EQUALS, AND and OR are supported over the virtual integer domain `0 <= x < 2^width`, with 2–8 search qubits and a conservative 16-total-qubit budget.
+The new execution path is **Predicate AST → algebraic simplification → reversible phase oracle → Grover / Aer → classical verification**. It supports `EQUALS`, `BITMASK_EQUALS`, `AND`, and `OR` over a bounded virtual integer register (2–8 search qubits, up to 16 total qubits).
 
-The compiler uses direct phase controls where efficient and clean compute/phase/uncompute circuits for compound expressions. Canonical predicates have deterministic fingerprints; bounded file-backed QPY templates persist across Python processes and container restarts. The cache uses versioned identity, payload checksums, file locking and atomic writes. Its filesystem must remain trusted application storage. Exact statevector tests check signs, relative phases, bit ordering and ancilla cleanup against a separate classical evaluator.
+The compiler performs **cost-guided circuit synthesis**: it simplifies Boolean constraints, uses direct phase marking where appropriate, shares subexpressions in a reversible DAG, and rejects transformations estimated to increase CX-gate cost. Compound predicates use compute/phase/uncompute to restore work qubits. Reusable QPY circuit templates are cached with versioned identities, integrity checks, locking, and bounded resources.
 
-This is an educational simulator experiment over a **virtual domain**, without record loading or QRAM. **No database speedup has been demonstrated.** Existing collection APIs and LOCAL/IBM modes are preserved; this extension requires no IBM account, token, paid service, GPU or hardware calls.
+### Reproducible circuit optimization
+
+For the reference predicate `(x & 15) == 9` on 4 search qubits, **3 Grover iterations**, 1,024 shots and seed 42 (Qiskit 1.1.1 / Aer 0.14.2, transpilation to `u,cx`, optimization level 1):
+
+| Transpiled metric | Original compiler | Cost-guided compiler | Reduction |
+| --- | ---: | ---: | ---: |
+| Oracle CX gates | 72 | **14** | **80.6%** |
+| Full Grover CX gates | 258 | **84** | **67.4%** |
+| Full Grover circuit depth | 455 | **158** | **65.3%** |
+| Total / work qubits | 5 / 1 | **4 / 0** | 1 fewer work qubit |
+
+The audit includes **906 Aer pipeline samples** and **600 cache samples** with recorded negative results and resource limits. These improvements are relative to **PlankDB's own original compiler**, not a comparison with state-of-the-art external oracle compilers. The ideal Grover success probability is unchanged. **No robust end-to-end latency improvement or database speedup has been demonstrated.**
+
+> **Scope:** Quantum Oracle Index operates on a **virtual bit-vector domain**, not stored database records or QRAM. The new extension runs on a local CPU simulator; real quantum hardware was not used to validate these results. General `OR` requires manually selected Grover iterations. The legacy `RANGE` correctness defect remains documented and unchanged.
+
+## Research & Technical Documentation
+
+The implementation, mathematical assumptions, verification methodology, and reproducible measurements are documented separately:
+
+| Document | What it contains |
+| --- | --- |
+| **[Mathematics and reversible compilation](docs/quantum-oracle/MATHEMATICS.md)** | Phase-oracle equations, Boolean simplification, ancilla cleanup, cost-guided synthesis, and Grover iteration selection. |
+| **[Optimization results](docs/quantum-oracle/OPTIMIZATION_RESULTS.md)** | Original vs optimized circuits, CX/depth measurements, timing breakdowns, and negative results. |
+| **[Independent implementation audit](docs/quantum-oracle/INDEPENDENT_AUDIT.md)** | Adversarial statevector checks, Boolean predicate equivalence, cache integrity, and remaining limitations. This is a software audit, **not external peer review**. |
+| **[Architecture and API](docs/quantum-oracle/ARCHITECTURE.md)** | New execution path, domain/application/infrastructure/web boundaries, DSL, resource limits, and REST endpoints. |
+| **[Reproducibility guide](docs/quantum-oracle/REPRODUCIBILITY.md)** | Docker, dependencies, test commands, seeds, and benchmark reproduction. |
+| **[Original experiment record](docs/quantum-oracle/EXPERIMENTS.md)** | Historical pre-optimization baseline and initial local Aer results. |
+| **[Raw benchmark evidence](docs/quantum-oracle/benchmarks/audit-2026-10-31/results.json)** | Machine-readable experimental results; also see [pipeline CSV](docs/quantum-oracle/benchmarks/audit-2026-10-31/pipelines.csv) and [cache CSV](docs/quantum-oracle/benchmarks/audit-2026-10-31/cache.csv). |
+| **[Release validation](docs/releases/RELEASE_VALIDATION.md)** | Executed Java/Python tests, Docker and HTTP smoke checks, repository hygiene, and known limitations. |
+
+The project demonstrates a **bounded, cost-aware compilation strategy**; it does **not** claim a new quantum algorithm or establish novelty over prior oracle synthesis research.
+
+## Try the Quantum Oracle Lab
+
+Run the v0.2.0 demonstration with Docker (no IBM account, token, GPU, or paid quantum service required):
 
 ```bash
-cp .env.example .env  # credential-free local demo; enables QUANTUM_ORACLE_ENABLED
-docker compose build
-docker compose up -d
+git clone https://github.com/swampus/plank-db.git
+cd plank-db
+cp .env.example .env
+docker compose up --build -d
 ```
 
-Open **http://localhost:8085/oracle-lab/**. The lab offers predicate controls, the actual Qiskit circuit, measured probabilities, a full bit grid, classical verification, cache/timing statistics and a recorded compiler comparison for matching reference parameters. All quantum results are labeled simulated. Swagger remains at http://localhost:8085/swagger-ui.html. The working port is **8085**. The extension defaults to disabled when `QUANTUM_ORACLE_ENABLED` is absent; the credential-free example enables it for the local demo.
+On PowerShell, use `Copy-Item .env.example .env` instead of `cp`. **Do not overwrite an existing private `.env` or commit it.** The supplied credential-free `.env.example` enables `QUANTUM_ORACLE_ENABLED=true` for the local demo.
+
+- **Oracle Lab:** http://localhost:8085/oracle-lab/ — interactive predicate explorer, real Aer measurements, circuit visualization, and recorded compiler comparisons.
+- **Swagger:** http://localhost:8085/swagger-ui.html
+- **New endpoints:** `POST /api/rest/v1/oracle/explain` and `POST /api/rest/v1/oracle/search` (additive; original collection endpoints remain available).
+
+Example query for 4 bits, mask `15`, target `9`:
 
 ```bash
-curl -sS http://localhost:8085/api/rest/v1/oracle/search \
+curl -sS -X POST http://localhost:8085/api/rest/v1/oracle/search \
   -H 'Content-Type: application/json' \
   -d '{"width":4,"predicate":{"type":"BITMASK_EQUALS","mask":15,"value":9},"iterations":3,"shots":1024,"seed":42}'
 ```
 
-Explore iterations 0, 3 and 6 to observe amplification and overshooting. `/api/rest/v1/oracle/explain` compiles the same circuit without measuring. OR requires explicit iterations; its analytical solution count is intentionally unknown.
+Try iterations `0`, `3`, and `6` in the lab to see Grover amplitude amplification and overshooting. Simulation is probabilistic; the classical verifier independently checks measured states. The local Oracle feature is optional and disabled unless enabled in configuration. See the [published v0.2.0 release](https://github.com/swampus/plank-db/releases/tag/v0.2.0) and [changelog](CHANGELOG.md) for details.
 
-Recorded reference comparison: width 4, mask 15, value 9, three iterations, 1024 shots, seed 42; Qiskit 1.1.1, Aer 0.14.2, `u,cx` basis, optimization level 1. Oracle-only and full-Grover figures are separate:
+## Table of Contents
 
-| Transpiled circuit metric | Original compiler | Optimized compiler |
-| --- | ---: | ---: |
-| Oracle CX gates | 72 | 14 |
-| Full three-iteration Grover CX gates | 258 | 84 |
-| Full three-iteration circuit depth | 455 | 158 |
-
-These are circuit-cost reductions and measured simulator improvements. Warm-cache HTTP server medians were about 722 ms versus 713 ms with overlapping variability; **no robust end-to-end speedup was established**. Theoretical success was unchanged. Full measurements, negative results and reproducibility limits are in [optimization results](docs/quantum-oracle/OPTIMIZATION_RESULTS.md), with [raw CSV/JSON evidence](docs/quantum-oracle/benchmarks/audit-2026-10-31/results.json).
-
-**Known limitations:** general OR requires manual iterations; the oracle domain is not arbitrary database storage; the existing legacy RANGE path can return “No match found” for populated multi-key ranges. Its route remains available and its known correctness defect is unchanged. HTTP smoke success does not establish mathematical correctness of that legacy algorithm. See [changelog](CHANGELOG.md) and [draft v0.2.0 release notes](docs/releases/v0.2.0.md).
-
-See [architecture and API](docs/quantum-oracle/ARCHITECTURE.md), [mathematics](docs/quantum-oracle/MATHEMATICS.md), [historical v1 experiments](docs/quantum-oracle/EXPERIMENTS.md), [adversarial audit](docs/quantum-oracle/INDEPENDENT_AUDIT.md), and [reproduction/test commands](docs/quantum-oracle/REPRODUCIBILITY.md). The audit uses an independent evaluator in automated tests; it is not an external certification.
-
+- [Quantum Oracle Index (v0.2.0)](#quantum-oracle-index-v020)
+- [Research & Technical Documentation](#research--technical-documentation)
+- [Try the Quantum Oracle Lab](#try-the-quantum-oracle-lab)
+- [1. Introduction](#1-introduction)
+- [2. Project Overview](#2-project-overview)
+- [3. Project Run](#3-project-run)
+- [4. Quickstart: Explain Quantum Plan (REST)](#4-quickstart-explain-quantum-plan-rest)
+- [5. API Reference](#5-api-reference)
+- [6. Architecture and Code Structure](#6-architecture-and-code-structure)
+- [7. Quantum Search Theory and Practice](#7-quantum-search-theory-and-practice)
+- [8. Limitations and Practical Considerations](#8-limitations-and-practical-considerations)
+- [9. License](#9-license)
 
 ---
 
@@ -503,7 +522,7 @@ By inverting dependencies and structuring around use cases, PlankDB remains flex
 <details>
 <summary>📘 Expand subsections</summary>
 
-- [7.1 Quantum Superposition: The Theoretical Basis](#51-quantum-superposition-the-theoretical-basis)
+- [7.1 Quantum Superposition: The Theoretical Basis](#71-quantum-superposition-the-theoretical-basis)
 - [7.2 Grover's Algorithm Explained](#72-grovers-algorithm-explained)
 - [7.3 How PlankDB Uses Grover](#73-how-plankdb-uses-grover)
 - [7.4 Probabilistic Nature of Quantum Results](#74-probabilistic-nature-of-quantum-results)
@@ -684,7 +703,7 @@ q_1: ———H———●————X———H———M
 - Qiskit Grover API: https://qiskit.org/documentation/stubs/qiskit.algorithms.Grover.html
 - IBM Quantum Runtime: https://docs.quantum.ibm.com/run
 
-### 🔍 7.7 Explain Quantum Plan: Why and How
+### 7.7 Explain Quantum Plan: Why and How
 
 **What the plan contains** 📦  
 The Explain endpoint returns a *deterministic* description of a Grover search **before** (and optionally alongside) any execution:
@@ -740,19 +759,19 @@ Although Grover’s algorithm runs in `O(√n)` time, preparing the data for qua
 ### 🔬 Probabilistic Output and Confidence
 Quantum results are **non-deterministic**:
 - A query may return the wrong key with small probability
-- PlankDB includes a `confidence_score` field to represent the likelihood of correctness
+- The legacy `confidence_score` reports a measurement-derived score, not a calibrated probability that the returned answer is correct
 - Repeated runs improve reliability but increase cost on real quantum hardware
 
 ### 📊 Search Suitability Criteria
 
-Grover's search is ideal when:
+An ideal Grover oracle-query advantage depends on efficient oracle access; it is not an observed PlankDB database speedup:
 
 | Factor                          | Classical Search | Quantum Grover |
 |---------------------------------|------------------|----------------|
-| Large datasets (n > 10,000)     | ❌ Slower        | ✅ Scales better |
-| Small collections               | ✅ Fast          | ❌ Overhead too high |
-| Multiple queries on static data | ❌ Repeated scans| ✅ Amortized |
-| Fast answer required            | ✅ Deterministic | ❌ Probabilistic |
+| Large unstructured spaces with efficient oracle access | Classical cost depends on the chosen index and data layout | Ideal Grover uses O(√N) oracle queries, excluding preparation and execution overhead |
+| Small collections | Usually very fast | Simulator and circuit overhead generally dominate |
+| Repeated queries on static data | Classical indexes can be reused | Reusing compiled oracle templates saves compilation work, not quantum execution cost |
+| Fast, deterministic responses | Usually preferable | Sampling and external execution add latency and uncertainty |
 
 ### 🧭 Future Outlook
 As quantum hardware matures and **QRAM** becomes available, systems like PlankDB could:
@@ -769,7 +788,7 @@ This project is licensed under the **MIT License** — a permissive open-source 
 You are free to use, modify, and distribute the code for both commercial and non-commercial purposes, provided that the original copyright notice is included.
 
 📘 Full license text is available at:  
-➡️ [LICENSE](https://github.com/swampus/plank-db/blob/development/LICENSE)
+➡️ [LICENSE](LICENSE)
 
 
 ## 🤝 Contributing
@@ -782,3 +801,4 @@ If you’d like to help improve PlankDB:
 2. Create a new branch
    ```bash
    git checkout -b feature/your-feature
+   ```
