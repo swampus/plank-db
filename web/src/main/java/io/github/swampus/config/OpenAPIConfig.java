@@ -21,7 +21,7 @@ public class OpenAPIConfig {
                                 for probabilistic key discovery. It supports both IBM Quantum and local simulation backends. 
                                 Designed for educational and research purposes.
                                 """)
-                        .version("1.0.0")
+                        .version("0.2.0")
                         .contact(new Contact()
                                 .name("PlankDB Contributors")
                                 .url("https://github.com/swampus/plank-db")

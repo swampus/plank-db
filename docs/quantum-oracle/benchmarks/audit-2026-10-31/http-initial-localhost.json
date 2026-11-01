@@ -1,0 +1,571 @@
+{
+  "request": {
+    "width": 4,
+    "mask": 15,
+    "value": 9,
+    "iterations": 3,
+    "shots": 1024,
+    "seed": 42
+  },
+  "notes": "Sequential measurements against isolated deployments; cache temperatures reflect actual responses. Cold cache is not cold JVM.",
+  "response_field_contract_equal": true,
+  "response_shape": {
+    "compiler_version": "str",
+    "schema_version": "number",
+    "normalized_predicate": {
+      "type": "str",
+      "mask": "number",
+      "value": "number"
+    },
+    "oracle_fingerprint": "str",
+    "backend": "str",
+    "qiskit_version": "str",
+    "aer_version": "str",
+    "simulated": "bool",
+    "cache_hit": "bool",
+    "analytical_solution_count": "number",
+    "iterations": "number",
+    "shots": "number",
+    "seed": "number",
+    "theoretical_success_probability": "number",
+    "observed_valid_probability": "number",
+    "measurements": [
+      {
+        "bits": "str",
+        "value": "number",
+        "count": "number",
+        "probability": "number",
+        "valid": "bool"
+      }
+    ],
+    "top_measurement": {
+      "bits": "str",
+      "value": "number",
+      "count": "number",
+      "probability": "number",
+      "valid": "bool"
+    },
+    "classical_baseline": {
+      "valid_states": [
+        "number"
+      ],
+      "solution_count": "number",
+      "elapsed_ms": "number"
+    },
+    "metrics": {
+      "search_qubits": "number",
+      "ancilla_qubits": "number",
+      "total_qubits": "number",
+      "statevector_bytes": "number",
+      "oracle_depth": "number",
+      "total_depth": "number",
+      "gate_counts": {
+        "u": "number",
+        "cx": "number",
+        "measure": "number"
+      },
+      "two_qubit_gates": "number"
+    },
+    "timings": {
+      "normalization_ms": "number",
+      "compilation_ms": "number",
+      "cache_lookup_and_write_ms": "number",
+      "circuit_construction_ms": "number",
+      "transpilation_ms": "number",
+      "simulation_ms": "number",
+      "verification_ms": "number",
+      "python_total_ms": "number"
+    },
+    "oracle_circuit": "str",
+    "warnings": [
+      "str"
+    ],
+    "end_to_end_ms": "number"
+  },
+  "samples": [
+    {
+      "compiler": "original",
+      "repeat": 0,
+      "temperature": "cold",
+      "client_http_ms": 3028.5944000024756,
+      "server_end_to_end_ms": 971.367687,
+      "oracle_construction_ms": 0.40249700032291,
+      "transpilation_ms": 537.0096709993959,
+      "simulation_ms": 10.56511299975682,
+      "classical_brute_force_ms": 0.0038250000216066837,
+      "cx": 258,
+      "total_depth": 455,
+      "oracle_depth": 129,
+      "total_qubits": 5,
+      "observed_valid_probability": 0.96875,
+      "compiler_version": "plank-oracle-v1",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "original",
+      "repeat": 1,
+      "temperature": "warm",
+      "client_http_ms": 2777.067999999417,
+      "server_end_to_end_ms": 746.357195,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 330.72559900028864,
+      "simulation_ms": 6.8668999992951285,
+      "classical_brute_force_ms": 0.003654000465758145,
+      "cx": 258,
+      "total_depth": 455,
+      "oracle_depth": 129,
+      "total_qubits": 5,
+      "observed_valid_probability": 0.96875,
+      "compiler_version": "plank-oracle-v1",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "original",
+      "repeat": 2,
+      "temperature": "warm",
+      "client_http_ms": 2732.822900001338,
+      "server_end_to_end_ms": 679.689456,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 307.93256199831376,
+      "simulation_ms": 6.469989999459358,
+      "classical_brute_force_ms": 0.003844997991109267,
+      "cx": 258,
+      "total_depth": 455,
+      "oracle_depth": 129,
+      "total_qubits": 5,
+      "observed_valid_probability": 0.96875,
+      "compiler_version": "plank-oracle-v1",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "original",
+      "repeat": 3,
+      "temperature": "warm",
+      "client_http_ms": 2760.3382999986934,
+      "server_end_to_end_ms": 735.490122,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 325.45337500050664,
+      "simulation_ms": 7.300235000002431,
+      "classical_brute_force_ms": 0.004484998498810455,
+      "cx": 258,
+      "total_depth": 455,
+      "oracle_depth": 129,
+      "total_qubits": 5,
+      "observed_valid_probability": 0.96875,
+      "compiler_version": "plank-oracle-v1",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "original",
+      "repeat": 4,
+      "temperature": "warm",
+      "client_http_ms": 2756.103300001996,
+      "server_end_to_end_ms": 713.656873,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 323.51388499955647,
+      "simulation_ms": 6.45201299994369,
+      "classical_brute_force_ms": 0.003796998498728499,
+      "cx": 258,
+      "total_depth": 455,
+      "oracle_depth": 129,
+      "total_qubits": 5,
+      "observed_valid_probability": 0.96875,
+      "compiler_version": "plank-oracle-v1",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "optimized",
+      "repeat": 0,
+      "temperature": "cold",
+      "client_http_ms": 842.3722000006819,
+      "server_end_to_end_ms": 785.692211,
+      "oracle_construction_ms": 0.25791300140554085,
+      "transpilation_ms": 314.80992200158653,
+      "simulation_ms": 3.2790810000733472,
+      "classical_brute_force_ms": 0.0038709986256435513,
+      "cx": 84,
+      "total_depth": 158,
+      "oracle_depth": 27,
+      "total_qubits": 4,
+      "observed_valid_probability": 0.9736328125,
+      "compiler_version": "plank-oracle-v2",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "optimized",
+      "repeat": 1,
+      "temperature": "warm",
+      "client_http_ms": 759.0130000025965,
+      "server_end_to_end_ms": 746.782784,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 304.02029600008973,
+      "simulation_ms": 3.1698329985374585,
+      "classical_brute_force_ms": 0.003811001079156995,
+      "cx": 84,
+      "total_depth": 158,
+      "oracle_depth": 27,
+      "total_qubits": 4,
+      "observed_valid_probability": 0.9736328125,
+      "compiler_version": "plank-oracle-v2",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "optimized",
+      "repeat": 2,
+      "temperature": "warm",
+      "client_http_ms": 762.8793000003498,
+      "server_end_to_end_ms": 735.939458,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 288.48127600213047,
+      "simulation_ms": 3.153375000692904,
+      "classical_brute_force_ms": 0.004888999683316797,
+      "cx": 84,
+      "total_depth": 158,
+      "oracle_depth": 27,
+      "total_qubits": 4,
+      "observed_valid_probability": 0.9736328125,
+      "compiler_version": "plank-oracle-v2",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "optimized",
+      "repeat": 3,
+      "temperature": "warm",
+      "client_http_ms": 702.589500000613,
+      "server_end_to_end_ms": 696.942268,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 287.73629699935555,
+      "simulation_ms": 2.9992290001246147,
+      "classical_brute_force_ms": 0.004500001523410901,
+      "cx": 84,
+      "total_depth": 158,
+      "oracle_depth": 27,
+      "total_qubits": 4,
+      "observed_valid_probability": 0.9736328125,
+      "compiler_version": "plank-oracle-v2",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    },
+    {
+      "compiler": "optimized",
+      "repeat": 4,
+      "temperature": "warm",
+      "client_http_ms": 747.5190000004659,
+      "server_end_to_end_ms": 720.875605,
+      "oracle_construction_ms": 0.0,
+      "transpilation_ms": 286.71917699830374,
+      "simulation_ms": 3.015307000168832,
+      "classical_brute_force_ms": 0.0037149984564166516,
+      "cx": 84,
+      "total_depth": 158,
+      "oracle_depth": 27,
+      "total_qubits": 4,
+      "observed_valid_probability": 0.9736328125,
+      "compiler_version": "plank-oracle-v2",
+      "qiskit_version": "1.1.1",
+      "aer_version": "0.14.2"
+    }
+  ],
+  "summary": [
+    {
+      "compiler": "original",
+      "temperature": "cold",
+      "samples": 1,
+      "stats": {
+        "client_http_ms": {
+          "median": 3028.5944000024756,
+          "min": 3028.5944000024756,
+          "max": 3028.5944000024756,
+          "population_stddev": 0.0
+        },
+        "server_end_to_end_ms": {
+          "median": 971.367687,
+          "min": 971.367687,
+          "max": 971.367687,
+          "population_stddev": 0.0
+        },
+        "oracle_construction_ms": {
+          "median": 0.40249700032291,
+          "min": 0.40249700032291,
+          "max": 0.40249700032291,
+          "population_stddev": 0.0
+        },
+        "transpilation_ms": {
+          "median": 537.0096709993959,
+          "min": 537.0096709993959,
+          "max": 537.0096709993959,
+          "population_stddev": 0.0
+        },
+        "simulation_ms": {
+          "median": 10.56511299975682,
+          "min": 10.56511299975682,
+          "max": 10.56511299975682,
+          "population_stddev": 0.0
+        },
+        "classical_brute_force_ms": {
+          "median": 0.0038250000216066837,
+          "min": 0.0038250000216066837,
+          "max": 0.0038250000216066837,
+          "population_stddev": 0.0
+        },
+        "cx": {
+          "median": 258,
+          "min": 258,
+          "max": 258,
+          "population_stddev": 0.0
+        },
+        "total_depth": {
+          "median": 455,
+          "min": 455,
+          "max": 455,
+          "population_stddev": 0.0
+        },
+        "oracle_depth": {
+          "median": 129,
+          "min": 129,
+          "max": 129,
+          "population_stddev": 0.0
+        },
+        "total_qubits": {
+          "median": 5,
+          "min": 5,
+          "max": 5,
+          "population_stddev": 0.0
+        },
+        "observed_valid_probability": {
+          "median": 0.96875,
+          "min": 0.96875,
+          "max": 0.96875,
+          "population_stddev": 0.0
+        }
+      }
+    },
+    {
+      "compiler": "original",
+      "temperature": "warm",
+      "samples": 4,
+      "stats": {
+        "client_http_ms": {
+          "median": 2758.2208000003448,
+          "min": 2732.822900001338,
+          "max": 2777.067999999417,
+          "population_stddev": 15.79960416456939
+        },
+        "server_end_to_end_ms": {
+          "median": 724.5734975,
+          "min": 679.689456,
+          "max": 746.357195,
+          "population_stddev": 25.46588681876037
+        },
+        "oracle_construction_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "population_stddev": 0.0
+        },
+        "transpilation_ms": {
+          "median": 324.48363000003155,
+          "min": 307.93256199831376,
+          "max": 330.72559900028864,
+          "population_stddev": 8.48839589047999
+        },
+        "simulation_ms": {
+          "median": 6.668444999377243,
+          "min": 6.45201299994369,
+          "max": 7.300235000002431,
+          "population_stddev": 0.3470013047400247
+        },
+        "classical_brute_force_ms": {
+          "median": 0.003820998244918883,
+          "min": 0.003654000465758145,
+          "max": 0.004484998498810455,
+          "population_stddev": 0.000319446281115837
+        },
+        "cx": {
+          "median": 258.0,
+          "min": 258,
+          "max": 258,
+          "population_stddev": 0.0
+        },
+        "total_depth": {
+          "median": 455.0,
+          "min": 455,
+          "max": 455,
+          "population_stddev": 0.0
+        },
+        "oracle_depth": {
+          "median": 129.0,
+          "min": 129,
+          "max": 129,
+          "population_stddev": 0.0
+        },
+        "total_qubits": {
+          "median": 5.0,
+          "min": 5,
+          "max": 5,
+          "population_stddev": 0.0
+        },
+        "observed_valid_probability": {
+          "median": 0.96875,
+          "min": 0.96875,
+          "max": 0.96875,
+          "population_stddev": 0.0
+        }
+      }
+    },
+    {
+      "compiler": "optimized",
+      "temperature": "cold",
+      "samples": 1,
+      "stats": {
+        "client_http_ms": {
+          "median": 842.3722000006819,
+          "min": 842.3722000006819,
+          "max": 842.3722000006819,
+          "population_stddev": 0.0
+        },
+        "server_end_to_end_ms": {
+          "median": 785.692211,
+          "min": 785.692211,
+          "max": 785.692211,
+          "population_stddev": 0.0
+        },
+        "oracle_construction_ms": {
+          "median": 0.25791300140554085,
+          "min": 0.25791300140554085,
+          "max": 0.25791300140554085,
+          "population_stddev": 0.0
+        },
+        "transpilation_ms": {
+          "median": 314.80992200158653,
+          "min": 314.80992200158653,
+          "max": 314.80992200158653,
+          "population_stddev": 0.0
+        },
+        "simulation_ms": {
+          "median": 3.2790810000733472,
+          "min": 3.2790810000733472,
+          "max": 3.2790810000733472,
+          "population_stddev": 0.0
+        },
+        "classical_brute_force_ms": {
+          "median": 0.0038709986256435513,
+          "min": 0.0038709986256435513,
+          "max": 0.0038709986256435513,
+          "population_stddev": 0.0
+        },
+        "cx": {
+          "median": 84,
+          "min": 84,
+          "max": 84,
+          "population_stddev": 0.0
+        },
+        "total_depth": {
+          "median": 158,
+          "min": 158,
+          "max": 158,
+          "population_stddev": 0.0
+        },
+        "oracle_depth": {
+          "median": 27,
+          "min": 27,
+          "max": 27,
+          "population_stddev": 0.0
+        },
+        "total_qubits": {
+          "median": 4,
+          "min": 4,
+          "max": 4,
+          "population_stddev": 0.0
+        },
+        "observed_valid_probability": {
+          "median": 0.9736328125,
+          "min": 0.9736328125,
+          "max": 0.9736328125,
+          "population_stddev": 0.0
+        }
+      }
+    },
+    {
+      "compiler": "optimized",
+      "temperature": "warm",
+      "samples": 4,
+      "stats": {
+        "client_http_ms": {
+          "median": 753.2660000015312,
+          "min": 702.589500000613,
+          "max": 762.8793000003498,
+          "population_stddev": 24.005377567493728
+        },
+        "server_end_to_end_ms": {
+          "median": 728.4075315,
+          "min": 696.942268,
+          "max": 746.782784,
+          "population_stddev": 18.69716187133064
+        },
+        "oracle_construction_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "population_stddev": 0.0
+        },
+        "transpilation_ms": {
+          "median": 288.108786500743,
+          "min": 286.71917699830374,
+          "max": 304.02029600008973,
+          "population_stddev": 7.1179921869568155
+        },
+        "simulation_ms": {
+          "median": 3.084341000430868,
+          "min": 2.9992290001246147,
+          "max": 3.1698329985374585,
+          "population_stddev": 0.07759556144065916
+        },
+        "classical_brute_force_ms": {
+          "median": 0.004155501301283948,
+          "min": 0.0037149984564166516,
+          "max": 0.004888999683316797,
+          "population_stddev": 0.0004868166602203278
+        },
+        "cx": {
+          "median": 84.0,
+          "min": 84,
+          "max": 84,
+          "population_stddev": 0.0
+        },
+        "total_depth": {
+          "median": 158.0,
+          "min": 158,
+          "max": 158,
+          "population_stddev": 0.0
+        },
+        "oracle_depth": {
+          "median": 27.0,
+          "min": 27,
+          "max": 27,
+          "population_stddev": 0.0
+        },
+        "total_qubits": {
+          "median": 4.0,
+          "min": 4,
+          "max": 4,
+          "population_stddev": 0.0
+        },
+        "observed_valid_probability": {
+          "median": 0.9736328125,
+          "min": 0.9736328125,
+          "max": 0.9736328125,
+          "population_stddev": 0.0
+        }
+      }
+    }
+  ]
+}

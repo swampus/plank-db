@@ -1,0 +1,422 @@
+{
+  "environment": {
+    "timestamp_utc": "2026-10-31T17:43:23.511915+00:00",
+    "python": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+    "platform": "Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "processor": "x86_64",
+    "cpu_count": 20,
+    "qiskit": "1.1.1",
+    "aer": "0.14.2",
+    "numpy": "1.26.4",
+    "compiler_version": "plank-oracle-v2",
+    "basis_gates": [
+      "u",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 42,
+    "seed_simulator": 42,
+    "shots": 1024,
+    "repeats": 3,
+    "simulator": {
+      "method": "statevector",
+      "device": "CPU",
+      "max_parallel_threads": 1,
+      "max_memory_mb": 64
+    },
+    "warmup": "one default pipeline per compiler discarded; core timings use a warm SDK and fresh circuits",
+    "cache_cold_definition": "new empty application-cache directory in a warm interpreter; not OS cache cold",
+    "pipeline_total_definition": "in-process construction through verification and explicit baseline; excludes interpreter/HTTP startup"
+  },
+  "request": {
+    "width": 4,
+    "predicate": {
+      "type": "BITMASK_EQUALS",
+      "mask": 15,
+      "value": 9
+    },
+    "iterations": 3,
+    "shots": 1024,
+    "seed": 42
+  },
+  "measured_reference": [
+    {
+      "compiler": "optimized",
+      "case": "reference",
+      "width": 4,
+      "iterations": 3,
+      "samples": 3,
+      "stats": {
+        "shots": {
+          "median": 1024,
+          "min": 1024,
+          "max": 1024,
+          "population_stddev": 0.0
+        },
+        "seed": {
+          "median": 42,
+          "min": 42,
+          "max": 42,
+          "population_stddev": 0.0
+        },
+        "total_qubits": {
+          "median": 4,
+          "min": 4,
+          "max": 4,
+          "population_stddev": 0.0
+        },
+        "ancilla_qubits": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "statevector_bytes_estimate": {
+          "median": 256,
+          "min": 256,
+          "max": 256,
+          "population_stddev": 0.0
+        },
+        "oracle_logical_depth": {
+          "median": 3,
+          "min": 3,
+          "max": 3,
+          "population_stddev": 0.0
+        },
+        "oracle_logical_cx": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "oracle_logical_two_qubit_gates": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "oracle_transpiled_depth": {
+          "median": 27,
+          "min": 27,
+          "max": 27,
+          "population_stddev": 0.0
+        },
+        "oracle_transpiled_cx": {
+          "median": 14,
+          "min": 14,
+          "max": 14,
+          "population_stddev": 0.0
+        },
+        "oracle_transpiled_two_qubit_gates": {
+          "median": 14,
+          "min": 14,
+          "max": 14,
+          "population_stddev": 0.0
+        },
+        "full_logical_depth": {
+          "median": 32,
+          "min": 32,
+          "max": 32,
+          "population_stddev": 0.0
+        },
+        "full_logical_cx": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "full_logical_two_qubit_gates": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "full_transpiled_depth": {
+          "median": 158,
+          "min": 158,
+          "max": 158,
+          "population_stddev": 0.0
+        },
+        "full_transpiled_cx": {
+          "median": 84,
+          "min": 84,
+          "max": 84,
+          "population_stddev": 0.0
+        },
+        "full_transpiled_two_qubit_gates": {
+          "median": 84,
+          "min": 84,
+          "max": 84,
+          "population_stddev": 0.0
+        },
+        "oracle_construction_ms": {
+          "median": 0.22368300051311962,
+          "min": 0.22058099784771912,
+          "max": 0.2376650008955039,
+          "population_stddev": 0.007431030400854889
+        },
+        "grover_construction_ms": {
+          "median": 0.5400419977377169,
+          "min": 0.5347930018615443,
+          "max": 0.5628550024994183,
+          "population_stddev": 0.012181320051462817
+        },
+        "oracle_transpilation_ms": {
+          "median": 4.976445001375396,
+          "min": 4.91542199961259,
+          "max": 5.041773998527788,
+          "population_stddev": 0.05159297135909827
+        },
+        "full_transpilation_ms": {
+          "median": 16.080588997283485,
+          "min": 15.499660999921616,
+          "max": 16.269224001007387,
+          "population_stddev": 0.32749685586089167
+        },
+        "transpilation_ms": {
+          "median": 21.05703399865888,
+          "min": 20.541434998449404,
+          "max": 21.184646000619978,
+          "population_stddev": 0.2780582563610257
+        },
+        "simulation_ms": {
+          "median": 2.750306997768348,
+          "min": 2.723002002312569,
+          "max": 2.8508610012067948,
+          "population_stddev": 0.054979383997370526
+        },
+        "verification_ms": {
+          "median": 0.02214900086983107,
+          "min": 0.022035001165932044,
+          "max": 0.025298002583440393,
+          "population_stddev": 0.0015120400485387287
+        },
+        "classical_brute_force_ms": {
+          "median": 0.018818998796632513,
+          "min": 0.01845299993874505,
+          "max": 0.01893399894470349,
+          "population_stddev": 0.00020508541357858092
+        },
+        "pipeline_total_ms": {
+          "median": 25.53413599889609,
+          "min": 24.90880899858894,
+          "max": 25.53839199754293,
+          "population_stddev": 0.2957902266076653
+        },
+        "solution_count_validation": {
+          "median": 1,
+          "min": 1,
+          "max": 1,
+          "population_stddev": 0.0
+        },
+        "ideal_success_probability_validation": {
+          "median": 0.9613189697265625,
+          "min": 0.9613189697265625,
+          "max": 0.9613189697265625,
+          "population_stddev": 0.0
+        },
+        "observed_valid_probability": {
+          "median": 0.9736328125,
+          "min": 0.9736328125,
+          "max": 0.9736328125,
+          "population_stddev": 0.0
+        },
+        "valid_shots": {
+          "median": 997,
+          "min": 997,
+          "max": 997,
+          "population_stddev": 0.0
+        }
+      }
+    },
+    {
+      "compiler": "original",
+      "case": "reference",
+      "width": 4,
+      "iterations": 3,
+      "samples": 3,
+      "stats": {
+        "shots": {
+          "median": 1024,
+          "min": 1024,
+          "max": 1024,
+          "population_stddev": 0.0
+        },
+        "seed": {
+          "median": 42,
+          "min": 42,
+          "max": 42,
+          "population_stddev": 0.0
+        },
+        "total_qubits": {
+          "median": 5,
+          "min": 5,
+          "max": 5,
+          "population_stddev": 0.0
+        },
+        "ancilla_qubits": {
+          "median": 1,
+          "min": 1,
+          "max": 1,
+          "population_stddev": 0.0
+        },
+        "statevector_bytes_estimate": {
+          "median": 512,
+          "min": 512,
+          "max": 512,
+          "population_stddev": 0.0
+        },
+        "oracle_logical_depth": {
+          "median": 6,
+          "min": 6,
+          "max": 6,
+          "population_stddev": 0.0
+        },
+        "oracle_logical_cx": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "oracle_logical_two_qubit_gates": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "oracle_transpiled_depth": {
+          "median": 129,
+          "min": 129,
+          "max": 129,
+          "population_stddev": 0.0
+        },
+        "oracle_transpiled_cx": {
+          "median": 72,
+          "min": 72,
+          "max": 72,
+          "population_stddev": 0.0
+        },
+        "oracle_transpiled_two_qubit_gates": {
+          "median": 72,
+          "min": 72,
+          "max": 72,
+          "population_stddev": 0.0
+        },
+        "full_logical_depth": {
+          "median": 36,
+          "min": 36,
+          "max": 36,
+          "population_stddev": 0.0
+        },
+        "full_logical_cx": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "full_logical_two_qubit_gates": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "population_stddev": 0.0
+        },
+        "full_transpiled_depth": {
+          "median": 455,
+          "min": 455,
+          "max": 455,
+          "population_stddev": 0.0
+        },
+        "full_transpiled_cx": {
+          "median": 258,
+          "min": 258,
+          "max": 258,
+          "population_stddev": 0.0
+        },
+        "full_transpiled_two_qubit_gates": {
+          "median": 258,
+          "min": 258,
+          "max": 258,
+          "population_stddev": 0.0
+        },
+        "oracle_construction_ms": {
+          "median": 0.3316109978186432,
+          "min": 0.32533199919271283,
+          "max": 0.33470500056864694,
+          "population_stddev": 0.003899456252048042
+        },
+        "grover_construction_ms": {
+          "median": 0.6190659987623803,
+          "min": 0.5892070003028493,
+          "max": 0.6953940028324723,
+          "population_stddev": 0.04471291573354568
+        },
+        "oracle_transpilation_ms": {
+          "median": 15.101272998435888,
+          "min": 14.96150900129578,
+          "max": 41.731207002158044,
+          "population_stddev": 12.586543299513982
+        },
+        "full_transpilation_ms": {
+          "median": 43.47653600052581,
+          "min": 43.00385900205583,
+          "max": 43.73787700023968,
+          "population_stddev": 0.30377350566057704
+        },
+        "transpilation_ms": {
+          "median": 58.839149998675566,
+          "min": 58.43804500182159,
+          "max": 84.73506600421388,
+          "population_stddev": 12.303083012827212
+        },
+        "simulation_ms": {
+          "median": 6.085850000090431,
+          "min": 6.040976000804221,
+          "max": 6.101155999203911,
+          "population_stddev": 0.025537731623330506
+        },
+        "verification_ms": {
+          "median": 0.02112500078510493,
+          "min": 0.02006599970627576,
+          "max": 0.021345000277506188,
+          "population_stddev": 0.000558343335514977
+        },
+        "classical_brute_force_ms": {
+          "median": 0.018823000573320314,
+          "min": 0.0186019969987683,
+          "max": 0.018982002075063065,
+          "population_stddev": 0.0001558232315909451
+        },
+        "pipeline_total_ms": {
+          "median": 68.06954700005008,
+          "min": 67.50114399983431,
+          "max": 93.89049499804969,
+          "population_stddev": 12.308273114693879
+        },
+        "solution_count_validation": {
+          "median": 1,
+          "min": 1,
+          "max": 1,
+          "population_stddev": 0.0
+        },
+        "ideal_success_probability_validation": {
+          "median": 0.9613189697265625,
+          "min": 0.9613189697265625,
+          "max": 0.9613189697265625,
+          "population_stddev": 0.0
+        },
+        "observed_valid_probability": {
+          "median": 0.96875,
+          "min": 0.96875,
+          "max": 0.96875,
+          "population_stddev": 0.0
+        },
+        "valid_shots": {
+          "median": 992,
+          "min": 992,
+          "max": 992,
+          "population_stddev": 0.0
+        }
+      }
+    }
+  ]
+}

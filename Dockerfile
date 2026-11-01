@@ -5,7 +5,8 @@ COPY . .
 RUN mvn -q -DskipTests clean package
 
 # === Stage 2: Runtime with Java + Python (venv) ===
-FROM openjdk:17-slim
+# openjdk:17-slim was removed upstream; keep Java 17 on a maintained JRE image.
+FROM eclipse-temurin:17-jre-jammy
 
 # System deps required by Qiskit/Aer (runtime libs included)
 RUN apt-get update && apt-get install -y --no-install-recommends \
